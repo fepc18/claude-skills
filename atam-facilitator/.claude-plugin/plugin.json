@@ -1,0 +1,9 @@
+{
+  "name": "atam-facilitator",
+  "version": "0.1.0",
+  "description": "Facilita talleres de evaluación de arquitectura usando el método ATAM (Architecture Tradeoff Analysis Method) del SEI.",
+  "author": {
+    "name": "Felipe Pabón"
+  },
+  "keywords": ["architecture", "ATAM", "SEI", "evaluation", "tradeoffs"]
+}
