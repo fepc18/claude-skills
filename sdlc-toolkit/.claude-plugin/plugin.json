@@ -1,0 +1,17 @@
+{
+  "name": "sdlc-toolkit",
+  "version": "1.0.0",
+  "type": "plugin",
+  "author": "Felipe Pabón",
+  "description": "Comprehensive Software Development Lifecycle plugin. Covers product design, functional and technical specifications, architecture, and code generation for React and Golang microservices.",
+  "readme": "../README.md",
+  "keywords": [
+    "sdlc",
+    "product-design",
+    "specifications",
+    "architecture",
+    "react",
+    "golang",
+    "microservices"
+  ]
+}
