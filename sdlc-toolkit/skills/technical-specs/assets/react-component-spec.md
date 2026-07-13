@@ -704,16 +704,162 @@ if (import.meta.env.DEV) {
 
 ## 12. Deployment Checklist
 
-- [ ] TypeScript strict mode passes (`npx tsc --noEmit`)
-- [ ] Linting passes (`npm run lint`)
-- [ ] All tests pass (`npm run test`)
-- [ ] Bundle size acceptable (`npm run analyze`)
-- [ ] Performance budget met (Core Web Vitals)
-- [ ] Accessibility audit passes (WCAG 2.1 AA)
-- [ ] Security audit passes (npm audit)
-- [ ] Environment variables configured
-- [ ] Build optimizations enabled (tree-shaking, minification)
-- [ ] Source maps for production error tracking
+**Ref:** `../../references/security-rules.md` + `../../references/cloud-standards.md`
+
+### 12.1 Pre-Build Checks
+
+- [ ] TypeScript strict mode: `npx tsc --noEmit` (cero errores)
+- [ ] Linting: `npm run lint` (cero warnings)
+- [ ] Tests: `npm run test` (todos pasan)
+- [ ] Security audit: `npm audit --audit-level=high` (sin vulnerabilidades HIGH/CRITICAL)
+
+### 12.2 Build Configuration
+
+```bash
+# Build de producción
+npm ci --prefer-offline
+npm run build
+
+# Verificar salida
+ls -lah dist/
+# index.html debe ser < 5KB (solo referencias a assets)
+# Assets deben tener hash en el nombre: main.abc123.js
+```
+
+**Variables de entorno para el build:**
+
+```bash
+# .env.production.local - NO commitear
+VITE_API_URL=https://api.[domain].com
+VITE_LOG_LEVEL=error
+
+# Verificar que NO hay secrets:
+grep -r "API_KEY\|SECRET\|PASSWORD\|TOKEN" src/ --include="*.ts" --include="*.tsx"
+# Si devuelve resultados: mover esos valores al backend
+```
+
+### 12.3 Bundle Analysis
+
+```bash
+npm run build -- --report
+# O con vite-plugin-visualizer:
+# Targets:
+# - Total bundle < 500KB gzipped
+# - Vendor chunk separado (React, libss de UI)
+# - Lazy loading para rutas pesadas
+```
+
+**Estrategia de code splitting requerida:**
+
+```typescript
+// router con lazy loading
+import { lazy, Suspense } from 'react';
+
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Reports = lazy(() => import('./pages/Reports'));
+
+export function App() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/reports" element={<Reports />} />
+      </Routes>
+    </Suspense>
+  );
+}
+```
+
+### 12.4 Cloud Deployment por Target
+
+La especificación completa de infraestructura se genera con el skill `deployment-specs`.
+
+#### Azure Static Web Apps
+
+- [ ] `staticwebapp.config.json` presente en la raiz del proyecto de build
+- [ ] Fallback routing configurado para SPA
+- [ ] Custom domain y HTTPS configurados
+
+```json
+// staticwebapp.config.json
+{
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/images/*.{png,jpg,gif}", "/css/*"]
+  },
+  "responseOverrides": {
+    "400": {"rewrite": "/index.html", "statusCode": 200},
+    "404": {"rewrite": "/index.html", "statusCode": 200}
+  },
+  "globalHeaders": {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "SAMEORIGIN"
+  }
+}
+```
+
+#### AWS S3 + CloudFront
+
+- [ ] Bucket S3 con acceso público bloqueado (via OAC)
+- [ ] `index.html` sin cache headers (`Cache-Control: no-cache`)
+- [ ] Assets con cache largo (`Cache-Control: public, max-age=31536000`)
+- [ ] CloudFront invalidation: `aws cloudfront create-invalidation --paths "/*"`
+- [ ] Custom error response: 404 → 200 `/index.html`
+
+#### DigitalOcean App Platform (Static Site)
+
+- [ ] `output_dir` configurado: `/dist` para Vite
+- [ ] `error_document` apunta a `index.html` (para SPA routing)
+- [ ] Build command verificado: `npm ci && npm run build`
+
+### 12.5 Security Headers
+
+Verificar que el servidor (o CDN) retorna:
+
+```
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+Referrer-Policy: strict-origin-when-cross-origin
+Content-Security-Policy: default-src 'self'; script-src 'self'; ...
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+```
+
+### 12.6 Performance Budget (Core Web Vitals)
+
+| Métrica | Target | Herramienta |
+|---------|--------|-------------|
+| LCP (Largest Contentful Paint) | < 2.5s | Lighthouse |
+| INP (Interaction to Next Paint) | < 200ms | Lighthouse |
+| CLS (Cumulative Layout Shift) | < 0.1 | Lighthouse |
+| TTFB (Time to First Byte) | < 800ms | WebPageTest |
+| Bundle total (gzipped) | < 500KB | rollup-plugin-visualizer |
+
+```bash
+# Verificar con Lighthouse CLI
+npm i -g @lhci/cli
+lhci autorun --collect.url=https://[staging-url]
+```
+
+### 12.7 Accessibility Final Check
+
+- [ ] `axe-core` ejecutado: `npx axe [staging-url] --tags wcag2a,wcag2aa`
+- [ ] Prueba manual con teclado (Tab, Enter, Escape, flechas)
+- [ ] Color contrast ratio: texto normal >= 4.5:1, texto grande >= 3:1
+
+### 12.8 Post-Deployment
+
+- [ ] App carga correctamente en la URL de producción
+- [ ] Rutas de React Router funcionan al hacer refresh directo (SPA routing OK)
+- [ ] Network tab: no requests a HTTP (todo HTTPS)
+- [ ] Console tab: cero errores en producción
+- [ ] API requests llegan al backend correcto (verificar VITE_API_URL)
+- [ ] Sentry o equivalente recibiendo eventos (si configurado)
+
+---
+
+**Para la spec completa de deployment:** Usar el skill `deployment-specs`.
+Ver: `../../skills/deployment-specs/SKILL.md`
 
 ---
 

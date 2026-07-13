@@ -852,9 +852,12 @@ DROP TABLE IF EXISTS [entities];
 
 ## 11. Deployment & Infrastructure
 
-**Dockerfile:**
+**Ref:** `../../references/cloud-standards.md` + `../../references/security-rules.md`
+
+### 11.1 Container
+
 ```dockerfile
-# Build stage
+# Dockerfile (multi-stage build)
 FROM golang:1.23-alpine AS builder
 WORKDIR /app
 COPY go.mod go.sum ./
@@ -864,55 +867,155 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o app ./cmd/server
 
 # Runtime stage
 FROM alpine:3.18
-RUN apk --no-cache add ca-certificates
+RUN apk --no-cache add ca-certificates curl
 WORKDIR /root/
 COPY --from=builder /app/app .
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=3s CMD /app/app -health
+
+# Health check requerido por todos los cloud targets
+HEALTHCHECK --interval=30s --timeout=3s --start-period=15s --retries=3 \
+  CMD curl -f http://localhost:8080/health || exit 1
+
 CMD ["./app"]
 ```
 
-**Kubernetes Deployment:**
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: [service-name]
-spec:
-  containers:
-  - name: [service-name]
-    image: [service-name]:latest
-    ports:
-    - name: http
-      containerPort: 8080
-    - name: admin
-      containerPort: 8081
+### 11.2 Health & Readiness Endpoints (REQUERIDO para cloud deployment)
 
-    livenessProbe:
-      httpGet:
-        path: /health
-        port: admin
-      initialDelaySeconds: 30
-      periodSeconds: 10
+Este microservicio **DEBE** implementar:
 
-    readinessProbe:
-      httpGet:
-        path: /ready
-        port: admin
-      initialDelaySeconds: 5
-      periodSeconds: 5
+```go
+// internal/interface/http/health_handler.go
+package httpinterface
 
-    env:
-    - name: DATABASE_URL
-      valueFrom:
-        secretKeyRef:
-          name: postgres-secret
-          key: url
-    - name: JWT_SECRET
-      valueFrom:
-        secretKeyRef:
-          name: jwt-secret
-          key: secret
+import (
+	"encoding/json"
+	"net/http"
+)
+
+type HealthHandler struct {
+	db *sql.DB
+}
+
+// LivenessCheck: ¿La app está viva? Solo verifica estado interno.
+func (h *HealthHandler) LivenessCheck(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{
+		"status": "ok",
+		"timestamp": time.Now().UTC().Format(time.RFC3339),
+	})
+}
+
+// ReadinessCheck: ¿La app puede recibir tráfico? Verifica DB y dependencias.
+func (h *HealthHandler) ReadinessCheck(w http.ResponseWriter, r *http.Request) {
+	if err := h.db.PingContext(r.Context()); err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusServiceUnavailable)
+		json.NewEncoder(w).Encode(map[string]string{
+			"status": "not ready",
+			"error": "database unavailable",
+		})
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{
+		"status": "ready",
+	})
+}
+```
+
+**Rutas obligatorias:**
+- `GET /health` → Liveness check (Azure: livenessProbe, AWS: healthCheck, DO: health_check)
+- `GET /ready` → Readiness check (Azure: readinessProbe, AWS: no equivalente directo)
+
+### 11.3 Graceful Shutdown
+
+```go
+// cmd/server/main.go
+package main
+
+import (
+	"context"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	"github.com/rs/zerolog/log"
+)
+
+func main() {
+	// Crear HTTP server
+	srv := &http.Server{
+		Addr:         ":8080",
+		Handler:      router(),
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+
+	// Channel para señales de sistema
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+
+	// Iniciar servidor en goroutine
+	go func() {
+		if err := srv.ListenAndServe(); err != http.ErrServerClosed {
+			log.Fatal().Err(err).Msg("server failed to start")
+		}
+	}()
+
+	// Bloquear hasta recibir señal SIGTERM/SIGINT
+	<-quit
+	log.Info().Msg("shutdown signal received, gracefully shutting down...")
+
+	// Dar 30 segundos para que las conexiones se drenen
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	// Shutdown graceful
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatal().Err(err).Msg("forced shutdown")
+	}
+	log.Info().Msg("server exited cleanly")
+}
+```
+
+### 11.4 Cloud Deployment Compatibility
+
+Este microservicio es compatible con todos los principales cloud providers:
+
+| Requisito | Azure Container Apps | AWS ECS Fargate | DO App Platform |
+|-----------|---------------------|-----------------|-----------------|
+| Puerto de la app | 8080 | 8080 | 8080 |
+| Health check path | `/health` (livenessProbe) | `/health` (healthCheck) | `/health` (health_check) |
+| Readiness path | `/ready` (readinessProbe) | No nativo en ECS | No nativo |
+| Shutdown timeout | Configurable (default 30s) | 30s (ECS stopTimeout) | 30s |
+| CPU mínimo | 0.25 vCPU | 256 CPU units | basic-xxs (0.1-1 vCPU) |
+| RAM mínimo | 0.5Gi | 512 MB | 512 MB |
+| Gestión de secretos | Azure Key Vault (Managed Identity) | AWS Secrets Manager (Task IAM Role) | DO App Platform env (type: SECRET) |
+
+**Para generar las specs de infraestructura completas:** Invocar el skill `deployment-specs` o continuar al Stage 7 del sdlc-orchestrator.
+Ver: `../../skills/deployment-specs/SKILL.md`
+
+### 11.5 Environment Variables
+
+Todas las configuraciones via variables de entorno (nunca hardcodeadas):
+
+```bash
+# .env.example - NO commitear .env con valores reales
+DATABASE_URL=postgresql://user:pass@localhost:5432/dbname?sslmode=disable
+JWT_SECRET=your-256-bit-secret-replace-this
+LOG_LEVEL=info
+PORT=8080
+CORS_ORIGIN=http://localhost:3000
+
+# Gestión de secretos por cloud:
+# Azure: referencias a Azure Key Vault via Managed Identity (no en este archivo)
+# AWS: AWS Secrets Manager via Task IAM Role (no en este archivo)
+# DO: DO App Platform env vars tipo SECRET (no en este archivo)
 ```
 
 ---
@@ -1014,17 +1117,57 @@ func TestCreate[Entity]Handler(t *testing.T) {
 
 ## 14. Deployment Checklist
 
-- [ ] Code builds without errors: `go build ./cmd/server`
-- [ ] All tests pass: `go test ./...`
-- [ ] Linting passes: `golangci-lint run`
-- [ ] Vulnerability scan: `go mod audit`
-- [ ] Database migrations tested
-- [ ] Environment variables configured
-- [ ] Docker image builds and runs
-- [ ] Kubernetes manifests validated
-- [ ] Health check endpoints working
-- [ ] Logging configured correctly
-- [ ] Security checks passed (JWT, validation, SQL injection prevention)
+**Ref:** `../../references/cloud-standards.md` + `../../references/security-rules.md`
+
+### Pre-Deployment Checks (Todos los Clouds)
+
+- [ ] `go build ./cmd/server` → sin errores
+- [ ] `go test ./... -race` → todos pasan
+- [ ] `golangci-lint run` → sin warnings
+- [ ] `go mod audit` → sin vulnerabilidades HIGH/CRITICAL
+- [ ] `GET /health` retorna `{"status":"ok"}` con HTTP 200
+- [ ] `GET /ready` retorna HTTP 200 cuando DB está disponible, 503 si no
+- [ ] Graceful shutdown implementado (SIGTERM drain en 30s)
+- [ ] Ninguna secret o credencial hardcodeada → `git grep -i "password\|secret\|token" --and -not ".env.example"` debe estar vacío
+- [ ] `.env` en `.gitignore`, solo `.env.example` en el repo
+- [ ] Docker image buildea sin errores: `docker build -t [service]:test .`
+- [ ] Container inicia y `/health` responde: `docker run -p 8080:8080 [service]:test`
+
+### Cloud-Specific Pre-Deployment
+
+#### Azure (via deployment-specs)
+
+- [ ] Azure Key Vault tiene los secretos: `db-url`, `jwt-secret`
+- [ ] Container App tiene Managed Identity con acceso al Key Vault
+- [ ] Azure Container Registry tiene `AcrPull` role asignado al Container App identity
+- [ ] Liveness probe → `GET /health`, readiness probe → `GET /ready`
+
+#### AWS (via deployment-specs)
+
+- [ ] AWS Secrets Manager tiene las entradas: `[project]/[env]/db-url`, `[project]/[env]/jwt-secret`
+- [ ] ECS Task IAM Role tiene permisos `secretsmanager:GetSecretValue` para esos ARNs
+- [ ] Security Group de ECS permite tráfico del ALB en puerto 8080
+- [ ] Health check en ECS Task Definition apunta a `GET /health`
+
+#### DigitalOcean (via deployment-specs)
+
+- [ ] DOCR tiene la imagen pusheada
+- [ ] App Platform env vars de tipo `SECRET` configuradas (JWT_SECRET mínimo)
+- [ ] Firewall de la DB solo permite acceso desde el App ID
+- [ ] Health check configurado en App Platform
+
+### Post-Deployment (Todos los Clouds)
+
+- [ ] App responde en su URL pública con HTTP 200
+- [ ] Logs aparecen centralizados (CloudWatch, Log Analytics, o DO Logs)
+- [ ] Database health check verifica conectividad: `GET /ready` responde 200
+- [ ] Alertas de uptime y error rate configuradas
+- [ ] Backup automático de DB verificado y testeado
+
+---
+
+**Para la spec completa de deployment:** Usar el skill `deployment-specs`.
+Ver: `../../skills/deployment-specs/SKILL.md`
 
 ---
 

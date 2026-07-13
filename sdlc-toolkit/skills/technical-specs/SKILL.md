@@ -83,6 +83,22 @@ Before returning:
 - Ask: "Is this ready for development? Any clarifications needed?"
 - Offer to add implementation checklists or test plans
 
+### 6. Deployment Spec Bridge
+
+After the technical spec is approved by the user, ask:
+
+**"Would you like to also generate Deployment Specifications for this service? This will create cloud-specific infrastructure configs (Terraform, CI/CD pipelines, secrets strategy) for Azure, AWS, or DigitalOcean."**
+
+Opciones:
+- Yes → Invoke `deployment-specs` skill with context:
+  - App type: [React / Golang / Full-Stack]
+  - Service port: (extracted from this spec)
+  - Health check paths: `/health` and `/ready` (if applicable)
+  - Environment variables defined in this spec
+- No → Technical spec is complete. Save and exit.
+
+If Yes: The deployment-specs skill will use the information already defined in this technical spec to generate appropriate cloud infrastructure.
+
 ## Reference Standards Integration
 
 ### Security Rules Applied
@@ -280,6 +296,13 @@ Before returning the spec to the user:
 - ✅ Implementation is code-ready (not design-phase)
 - ✅ Checklists are specific and actionable
 
+**Deployment Readiness:**
+- ✅ Health check endpoint defined (`GET /health` returns 200 with status JSON)
+- ✅ Readiness endpoint defined (`GET /ready` returns 200 when dependencies available, 503 if not)
+- ✅ Graceful shutdown strategy documented (SIGTERM handling, drain period)
+- ✅ No secrets hardcoded anywhere (all via environment variables per security-rules.md)
+- ✅ Deployment spec bridge offered to user (prompt for deployment-specs skill in Step 6)
+
 ## Refinement Workflow
 
 If the user asks for adjustments:
@@ -291,12 +314,15 @@ If the user asks for adjustments:
 ## Dependencies & Context
 
 **Used by:** sdlc-orchestrator (Stage 6), can be used independently
-**Feeds into:** Implementation (developers use these specs to code)
+**Feeds into:**
+- Implementation (developers use these specs to code)
+- `deployment-specs` skill (Stage 7): this technical spec provides app type, service ports, health endpoints, and environment variables that the deployment-specs skill consumes to generate cloud infrastructure
 **References:**
 - `../../references/security-rules.md` (auth, validation, error handling)
 - `../../references/clean-architecture.md` (layer separation, patterns)
 - `../../references/react-standards.md` (components, hooks, testing)
 - `../../references/golang-standards.md` (package structure, middleware, database)
+- `../../references/cloud-standards.md` (secrets management, deployment conventions) — used by downstream deployment-specs skill
 
 **Output location:** `/sessions/[session-id]/mnt/outputs/[feature-name]-{react,golang}-technical-spec.md`
 
