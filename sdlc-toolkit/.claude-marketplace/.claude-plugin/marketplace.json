@@ -1,0 +1,20 @@
+{
+  "name": "sdlc-toolkit-marketplace",
+  "description": "Comprehensive Software Development Lifecycle plugin and skills",
+  "owner": {
+    "name": "Felipe Pabón",
+    "email": "fepc18@github.com"
+  },
+  "plugins": [
+    {
+      "name": "sdlc-toolkit",
+      "description": "Comprehensive Software Development Lifecycle plugin. Covers product design, functional and technical specifications, architecture, and code generation for React and Golang microservices.",
+      "author": {
+        "name": "Felipe Pabón"
+      },
+      "category": "development",
+      "source": "./sdlc-toolkit",
+      "homepage": "https://github.com/fepc18/claude-skills/tree/main/sdlc-toolkit"
+    }
+  ]
+}
