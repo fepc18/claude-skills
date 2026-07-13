@@ -175,7 +175,11 @@ Next: Architecture (arc42)
 
 ### Successful Completion
 - User completes all 8 stages → Offer to export full project documentation bundle
-- Display summary: "Project [X] development specifications and test strategy complete. Ready for implementation, testing, and deployment."
+- Display summary: "Project [X] development specifications, test strategy, and deployment infrastructure complete. Ready for implementation."
+- Offer optional complementary skills for accelerating development:
+  - **Database Schema** (`database-schema`) — if backend/database involved, generates SQL, migrations, indexes
+  - **Implementation Scaffolding** (`implementation-scaffolding`) — generates project boilerplate (React structure options, Golang clean-architecture) ready for coding
+  - **Observability Specs** (`observability-specs`) — generates production monitoring strategy (logging, metrics, alerts, dashboards, SLO/SLI)
 
 ### Early Exit
 - User chooses to exit mid-pipeline
@@ -194,4 +198,4 @@ Next: Architecture (arc42)
 
 **Model:** Claude (Opus, Sonnet, or Haiku)
 **Invocation:** Model-invoked based on trigger keywords
-**Dependencies:** product-design, functional-specs, technical-specs, test-strategy, deployment-specs skills + existing arc42-doc, arch-review, atam-facilitator
+**Dependencies:** product-design, functional-specs, technical-specs, test-strategy, deployment-specs + optional database-schema, implementation-scaffolding, observability-specs + existing arc42-doc, arch-review, atam-facilitator

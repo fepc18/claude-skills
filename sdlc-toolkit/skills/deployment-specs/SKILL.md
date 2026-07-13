@@ -322,6 +322,29 @@ Si hay cambios importantes (ej: agregar nueva región):
 - Regenear el stack completo con la nueva configuración
 - Mostrar diff de qué cambió
 
+## Observability Bridge
+
+After deployment specs are complete and infrastructure is defined, ask:
+
+**"Would you like to generate a comprehensive Observability Strategy for production monitoring?"**
+
+→ Invoke `observability-specs` skill with context (stack type: Golang/React/Full-Stack, cloud platform, compliance requirements)
+
+**Output includes:**
+- Structured logging setup (zerolog for Golang, console logging for React)
+- Metrics collection strategy (Prometheus/CloudWatch/Azure Monitor)
+- Alert rules with thresholds (error rate, latency p99, pod restarts)
+- Health check endpoints and readiness probes
+- Cloud-specific dashboards (Grafana/Azure Monitor)
+- SLO/SLI targets (uptime, latency, error rate)
+- Log retention & compliance policies
+- CI/CD integration for observability
+
+**Recommended flow for production-ready system:**
+Deployment Specs → Observability Specs → Infrastructure provisioned with integrated monitoring ready
+
+---
+
 ## Dependencies & Context
 
 **Used by:**

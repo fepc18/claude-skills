@@ -83,34 +83,51 @@ Before returning:
 - Ask: "Is this ready for development? Any clarifications needed?"
 - Offer to add implementation checklists or test plans
 
-### 6. Test Strategy & Deployment Bridge
+### 6. Database Schema, Test Strategy & Implementation Bridge
 
 After the technical spec is approved by the user, ask:
 
 **"Would you like to proceed with the next stages? You can now generate:"**
 
 Options:
-- A) **Test Strategy first (Stage 7)** → Invoke `test-strategy` skill
+- A) **Database Schema** → Invoke `database-schema` skill
+  - Purpose: Generate SQL schemas, migrations, indexes, seed data (for Golang/backend projects)
+  - When to use: If this feature involves data persistence (most features do)
+  - Output: production-ready DDL, migration pairs, repository interfaces
+  - Note: Should be created BEFORE implementation scaffolding for backend
+  - Pre-requisites: Technical spec must define data model/entities
+
+- B) **Test Strategy (Stage 7)** → Invoke `test-strategy` skill
   - Purpose: Define comprehensive testing approach (unit, integration, E2E, accessibility, smoke tests)
   - Output: Test strategy document with real code examples, BDD scenarios, coverage targets, CI/CD integration
   - Recommended: Generates smoke tests that feed into deployment pipeline
   - After: Can then proceed to Deployment Specs (Stage 8)
 
-- B) **Deployment Specifications (Stage 8)** → Invoke `deployment-specs` skill
+- C) **Deployment Specifications (Stage 8)** → Invoke `deployment-specs` skill
   - Purpose: Generate cloud-specific infrastructure configs (Terraform, CI/CD pipelines, secrets strategy)
   - Targets: Azure, AWS, or DigitalOcean
   - Context: Uses app type, ports, health endpoints, environment variables from this spec
   - Note: Can integrate smoke tests from separate test-strategy if created
 
-- C) **Generate both (recommended)** → Invoke `test-strategy` then `deployment-specs`
-  - Sequence: Test Strategy → Deployment Specs
-  - Result: Complete testing and deployment pipeline with integrated smoke tests
-  - Flow: Specify → Test → Deploy
+- D) **Generate in sequence (recommended)** → Database Schema → Test Strategy → Deployment Specs
+  - Sequence: Specify → Database → Test → Deploy
+  - Result: Complete technical pipeline with schemas, testing, and deployment
+  - Flow: Full SDLC from technical specs to production deployment
 
-- D) **No** → Technical spec is complete. Save and exit.
+- E) **Implementation Scaffolding** → Invoke `implementation-scaffolding` skill (standalone)
+  - Purpose: Generate project boilerplate structure ready for coding
+  - React: Asks for preferred folder structure (Atomic Design, Feature-Based, Page-Based, Flat)
+  - Golang: Always clean-architecture with dependency injection setup
+  - Output: Directory tree, config files, stub components/handlers, testing setup
+  - Use case: After specs are done OR standalone for quick project kickstart
 
-**Recommended flow for full SDLC:**
-Test Strategy (Stage 7) → Deployment Specs (Stage 8), where smoke tests from Stage 7 integrate into the CI/CD pipeline definition in Stage 8.
+- F) **No** → Technical spec is complete. Save and exit.
+
+**Recommended full SDLC flow:**
+Database Schema (if backend) → Test Strategy (Stage 7) → Deployment Specs (Stage 8), where smoke tests from Stage 7 integrate into the CI/CD pipeline definition in Stage 8.
+
+**For immediate development kickstart:**
+Database Schema + Implementation Scaffolding + Test Strategy, then deploy with deployment-specs.
 
 ## Reference Standards Integration
 
