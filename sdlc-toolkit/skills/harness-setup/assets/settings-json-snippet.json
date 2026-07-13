@@ -1,0 +1,12 @@
+{
+  "hooks": {
+    "preToolUse": {
+      "command": "bash .claude/hooks/pretooluse.sh",
+      "description": "Validates tool usage against project rules before execution. Blocks dangerous operations, protects critical paths, warns about deprecated patterns."
+    },
+    "postToolUse": {
+      "command": "bash .claude/hooks/posttooluse.sh",
+      "description": "Runs after each tool completes. Verifies tests pass, linting passes, build succeeds. Creates autonomous feedback loop for self-correction."
+    }
+  }
+}
