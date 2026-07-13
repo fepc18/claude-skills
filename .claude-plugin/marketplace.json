@@ -1,0 +1,27 @@
+{
+  "name": "claude-skills-marketplace",
+  "description": "Collection of Claude Code skills and plugins including SDLC toolkit, ATAM facilitator, and project management",
+  "owner": {
+    "name": "Felipe Pabón"
+  },
+  "plugins": [
+    {
+      "name": "sdlc-toolkit",
+      "description": "Comprehensive Software Development Lifecycle plugin. Covers product design, functional and technical specifications, architecture, and code generation for React and Golang microservices.",
+      "author": {
+        "name": "Felipe Pabón"
+      },
+      "category": "development",
+      "source": "./sdlc-toolkit"
+    },
+    {
+      "name": "atam-facilitator",
+      "description": "ATAM (Architecture Tradeoff Analysis Method) workshop facilitator for evaluating architectural quality attributes",
+      "author": {
+        "name": "Felipe Pabón"
+      },
+      "category": "architecture",
+      "source": "./atam-facilitator"
+    }
+  ]
+}
