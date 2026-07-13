@@ -1,6 +1,6 @@
 ---
 name: sdlc-orchestrator
-description: Master skill that orchestrates the complete software development lifecycle pipeline. Guides users through all 7 stages: product design, architecture, evaluation, architecture review, functional specs, technical specs, and deployment specs.
+description: Master skill that orchestrates the complete software development lifecycle pipeline. Guides users through all 8 stages: product design, architecture, evaluation, architecture review, functional specs, technical specs, test strategy, and deployment specs.
 model_invoked: true
 triggers:
   - iniciar proyecto
@@ -18,7 +18,7 @@ triggers:
 # SDLC Orchestrator
 
 ## Purpose
-The sdlc-orchestrator is the master skill that guides users through the complete software development lifecycle. It maintains state across 7 sequential stages, invokes specialized skills at each stage, and tracks progress.
+The sdlc-orchestrator is the master skill that guides users through the complete software development lifecycle. It maintains state across 8 sequential stages, invokes specialized skills at each stage, and tracks progress.
 
 ## How It Works
 
@@ -30,7 +30,7 @@ When triggered, ask the user:
 - **Timeline/Scope:** Rough estimate of complexity (Small/Medium/Large)
 
 ### 2. Present the Pipeline
-Display the 7-stage pipeline with visual status indicators:
+Display the 8-stage pipeline with visual status indicators:
 
 ```
 📋 SOFTWARE DEVELOPMENT LIFECYCLE PIPELINE
@@ -60,7 +60,11 @@ Display the 7-stage pipeline with visual status indicators:
     └─ Output: [ProjectName]-technical-specs.md
     └─ Skill: technical-specs
 
-[7] ✓ Deployment Specs        (Cloud Infrastructure & CI/CD)   [PENDING]
+[7] ✓ Test Strategy           (Testing Specs & Smoke Tests)    [PENDING]
+    └─ Output: [ProjectName]-test-strategy.md
+    └─ Skill: test-strategy
+
+[8] ✓ Deployment Specs        (Cloud Infrastructure & CI/CD)   [PENDING]
     └─ Output: [ProjectName]-[cloud]-deployment-spec.md
     └─ Skill: deployment-specs
 
@@ -87,7 +91,7 @@ Maintain a running context block showing:
 📊 PROJECT PROGRESS
 Project: UserManagement
 Created: 2026-07-01
-Completed Stages: 1/7
+Completed Stages: 1/8
 
 Documents Generated:
   ✓ usermanagement-prd.md
@@ -96,6 +100,7 @@ Documents Generated:
   ○ usermanagement-arch-review.md
   ○ usermanagement-functional-specs.md
   ○ usermanagement-technical-specs.md
+  ○ usermanagement-test-strategy.md
   ○ usermanagement-[cloud]-deployment-spec.md
 
 Next: Architecture (arc42)
@@ -150,19 +155,27 @@ Next: Architecture (arc42)
 - **Skill:** `technical-specs`
 - **Scope:** Generates specs per feature/component, references security-rules.md and clean-architecture.md
 
-#### Stage 7: Deployment Specs
+#### Stage 7: Test Strategy
+- **Purpose:** Define comprehensive testing approach covering unit, integration, E2E, accessibility, performance and smoke tests
+- **Inputs:** Technical specs from Stage 6 (API contracts, component tree, environment variables)
+- **Outputs:** Test strategy document with real code examples, BDD scenarios, coverage targets, CI/CD integration guide, and smoke test suite
+- **Skill:** `test-strategy`
+- **Scope:** Golang (table-driven tests, mocks, integration tests with real DB) and/or React (Vitest + RTL, Playwright, axe-core). Smoke tests generated feed into Stage 8 deployment pipeline.
+- **Note:** References golang-standards.md and react-standards.md for testing patterns; smoke test suite integrates into deployment CI/CD
+
+#### Stage 8: Deployment Specs
 - **Purpose:** Generate cloud-specific deployment infrastructure, CI/CD pipelines, secrets management strategy, and rollback plans
-- **Inputs:** Technical specs from Stage 6 (app type, ports, health endpoints, env vars)
+- **Inputs:** Technical specs from Stage 6 (app type, ports, health endpoints, env vars) + smoke test suite from Stage 7
 - **Outputs:** Deployment specification(s) with Terraform HCL, native IaC (Bicep/CloudFormation), GitHub Actions workflows, Azure DevOps pipelines, and deployment checklists
 - **Skill:** `deployment-specs`
 - **Cloud targets:** Azure (Terraform + Bicep), AWS (Terraform + CloudFormation), DigitalOcean (Terraform only), or Multi-cloud
-- **Note:** References cloud-standards.md for naming conventions, tagging, and secrets management patterns
+- **Note:** References cloud-standards.md for naming conventions, tagging, and secrets management patterns; integrates smoke tests from Stage 7 into CI/CD pipeline
 
 ## Exit Conditions
 
 ### Successful Completion
-- User completes all 7 stages → Offer to export full project documentation bundle
-- Display summary: "Project [X] development specifications complete. Ready for implementation and deployment."
+- User completes all 8 stages → Offer to export full project documentation bundle
+- Display summary: "Project [X] development specifications and test strategy complete. Ready for implementation, testing, and deployment."
 
 ### Early Exit
 - User chooses to exit mid-pipeline
@@ -181,4 +194,4 @@ Next: Architecture (arc42)
 
 **Model:** Claude (Opus, Sonnet, or Haiku)
 **Invocation:** Model-invoked based on trigger keywords
-**Dependencies:** product-design, functional-specs, technical-specs, deployment-specs skills + existing arc42-doc, arch-review, atam-facilitator
+**Dependencies:** product-design, functional-specs, technical-specs, test-strategy, deployment-specs skills + existing arc42-doc, arch-review, atam-facilitator

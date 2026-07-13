@@ -83,21 +83,34 @@ Before returning:
 - Ask: "Is this ready for development? Any clarifications needed?"
 - Offer to add implementation checklists or test plans
 
-### 6. Deployment Spec Bridge
+### 6. Test Strategy & Deployment Bridge
 
 After the technical spec is approved by the user, ask:
 
-**"Would you like to also generate Deployment Specifications for this service? This will create cloud-specific infrastructure configs (Terraform, CI/CD pipelines, secrets strategy) for Azure, AWS, or DigitalOcean."**
+**"Would you like to proceed with the next stages? You can now generate:"**
 
-Opciones:
-- Yes → Invoke `deployment-specs` skill with context:
-  - App type: [React / Golang / Full-Stack]
-  - Service port: (extracted from this spec)
-  - Health check paths: `/health` and `/ready` (if applicable)
-  - Environment variables defined in this spec
-- No → Technical spec is complete. Save and exit.
+Options:
+- A) **Test Strategy first (Stage 7)** → Invoke `test-strategy` skill
+  - Purpose: Define comprehensive testing approach (unit, integration, E2E, accessibility, smoke tests)
+  - Output: Test strategy document with real code examples, BDD scenarios, coverage targets, CI/CD integration
+  - Recommended: Generates smoke tests that feed into deployment pipeline
+  - After: Can then proceed to Deployment Specs (Stage 8)
 
-If Yes: The deployment-specs skill will use the information already defined in this technical spec to generate appropriate cloud infrastructure.
+- B) **Deployment Specifications (Stage 8)** → Invoke `deployment-specs` skill
+  - Purpose: Generate cloud-specific infrastructure configs (Terraform, CI/CD pipelines, secrets strategy)
+  - Targets: Azure, AWS, or DigitalOcean
+  - Context: Uses app type, ports, health endpoints, environment variables from this spec
+  - Note: Can integrate smoke tests from separate test-strategy if created
+
+- C) **Generate both (recommended)** → Invoke `test-strategy` then `deployment-specs`
+  - Sequence: Test Strategy → Deployment Specs
+  - Result: Complete testing and deployment pipeline with integrated smoke tests
+  - Flow: Specify → Test → Deploy
+
+- D) **No** → Technical spec is complete. Save and exit.
+
+**Recommended flow for full SDLC:**
+Test Strategy (Stage 7) → Deployment Specs (Stage 8), where smoke tests from Stage 7 integrate into the CI/CD pipeline definition in Stage 8.
 
 ## Reference Standards Integration
 
