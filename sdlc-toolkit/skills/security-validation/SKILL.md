@@ -30,7 +30,7 @@ Validates applications, specifications, and infrastructure configurations agains
 
 ---
 
-## Workflow (6 Steps)
+## Workflow (7 Steps)
 
 ### Step 1: Scope & Asset Identification
 "What would you like to validate?"
@@ -106,6 +106,67 @@ Offer integration:
 - B) Add security checklist to harness-setup
 - C) Configure CI/CD security scanning
 - D) Schedule periodic re-validation
+
+---
+
+### Step 7: Technical Debt Management (NEW)
+
+After findings are documented, offer:
+
+**"How would you like to manage these findings?"**
+
+#### Option A: Implement Fixes Now
+- User: "Implementa los fixes ahora"
+- Claude: Provides implementation support
+  - Code review: what needs to change
+  - Step-by-step implementation guide
+  - Test verification for each fix
+  - Deployment checklist
+- Supports iterative implementation (one fix at a time or all at once)
+- Direct code changes in project repository
+
+#### Option B: Register as Technical Debt
+- User: "Registra como deuda técnica"
+- Claude: Creates structured technical debt tracking system
+- **Output Structure:**
+  ```
+  project-root/technical-debt/
+  ├── README.md                      (overview and progress tracking)
+  ├── SECURITY_DEBT_TRACKER.md       (all findings organized by priority)
+  ├── PRIORITY_1_FIXES.md            (critical fixes with code examples)
+  ├── PRIORITY_2_IMPROVEMENTS.md     (high-priority improvements)
+  └── PRIORITY_3_ENHANCEMENTS.md     (backlog items)
+  ```
+- **Contents per Priority Document:**
+  - Finding ID and OWASP category
+  - Severity level and effort estimate
+  - Complete code examples (before/after)
+  - Unit test patterns
+  - Database migrations (if applicable)
+  - Implementation verification steps
+  - Testing checklist
+- **Tracking Features:**
+  - Risk assessment summary
+  - Deployment readiness status
+  - Milestone timeline with estimated hours
+  - Progress tracking table (owner, status, % complete)
+  - Implementation workflow (step-by-step)
+  - Jira/GitHub issue templates
+
+#### Option C: Hybrid Approach
+- User: "Implementa P1 ahora, registra P2 y P3 como deuda"
+- Claude:
+  1. Implements Priority 1 fixes immediately
+  2. Creates technical debt folder for P2 and P3
+  3. Provides deployment checklist for P1 only
+  4. Creates backlog items for P2/P3
+
+#### Option D: No Action (Just Report)
+- User: "Solo documenta, no implementes"
+- Claude: Keeps findings in OWASP validation report only
+- Team can reference findings later
+
+**Output:** Structured technical debt files + tracking infrastructure
 
 ---
 
@@ -255,12 +316,29 @@ FINDINGS:
 
 ## Output Location
 
+### Primary Output (Always Generated)
 ```
 /sessions/[session-id]/mnt/outputs/
   ├── [project-name]-security-validation.md (main report)
   ├── [project-name]-owasp-findings.md (detailed)
   └── [project-name]-remediation-plan.md (implementation)
 ```
+
+### Optional Output (If User Chooses Option B/C: Technical Debt)
+```
+project-root/technical-debt/
+  ├── README.md                      (overview + progress tracking)
+  ├── SECURITY_DEBT_TRACKER.md       (13 findings by priority + milestones)
+  ├── PRIORITY_1_FIXES.md            (critical: code examples + tests, 13h)
+  ├── PRIORITY_2_IMPROVEMENTS.md     (high: implementation guide + configs, 7h)
+  └── PRIORITY_3_ENHANCEMENTS.md     (medium/low: backlog items, 6h)
+```
+
+### Git Changes (If User Chooses Option A: Implement Now)
+- Direct commits to backend/ and frontend/ directories
+- Database migrations applied
+- Code changes with comprehensive test coverage
+- CI/CD pipeline updated if needed
 
 ---
 
@@ -283,6 +361,19 @@ FINDINGS:
 - [ ] Secure patterns included (code examples)
 - [ ] Implementation roadmap provided
 - [ ] Compliance status clear
+
+**Technical Debt Output (If Option B/C Selected):**
+- [ ] technical-debt/ folder created
+- [ ] README.md contains overview and progress tracking
+- [ ] SECURITY_DEBT_TRACKER.md organizes all findings by priority (P1/P2/P3)
+- [ ] PRIORITY_1_FIXES.md includes complete code examples + tests
+- [ ] PRIORITY_2_IMPROVEMENTS.md includes implementation guide + configs
+- [ ] PRIORITY_3_ENHANCEMENTS.md includes backlog items
+- [ ] Effort estimates provided per task
+- [ ] Risk assessment and deployment readiness stated
+- [ ] Milestones defined with timelines
+- [ ] Progress tracking table included
+- [ ] Jira/GitHub issue templates provided
 
 ---
 
