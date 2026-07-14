@@ -83,51 +83,78 @@ Before returning:
 - Ask: "Is this ready for development? Any clarifications needed?"
 - Offer to add implementation checklists or test plans
 
-### 6. Database Schema, Test Strategy & Implementation Bridge
+### 5.5 Security Checkpoint (CRITICAL)
+**Before proceeding to next stages, validate against OWASP Top 10:**
+
+Quick security validation:
+- ✅ Authentication: Endpoints requiring auth have JWT/Bearer validation?
+- ✅ Input Validation: All endpoints validate input (length, type, format)?
+- ✅ Injection Prevention: Using parameterized queries (SQL)? Safe JSON handling (React)?
+- ✅ Secrets: No hardcoded credentials, all via env vars?
+- ✅ CORS: Specific origins whitelisted (not *)?
+- ✅ Rate Limiting: Sensitive endpoints (auth, API) rate-limited?
+- ✅ Error Handling: Errors don't expose internal details?
+- ✅ Logging: Plan to log security events (no PII)?
+
+**If any fail:**
+Ask user: "Should I invoke `security-validation` skill for deep OWASP review before proceeding?"
+- Option A: Yes → Invoke security-validation skill
+- Option B: No → Flag in Output and continue
+
+### 6. Database Schema, Test Strategy, Security Validation & Implementation Bridge
 
 After the technical spec is approved by the user, ask:
 
 **"Would you like to proceed with the next stages? You can now generate:"**
 
 Options:
-- A) **Database Schema** → Invoke `database-schema` skill
+- A) **Security Validation** → Invoke `security-validation` skill
+  - Purpose: Deep OWASP Top 10 validation of technical specs and design
+  - When to use: Before implementation to prevent security issues at source
+  - Output: Detailed findings per OWASP category, remediation roadmap, compliance checklist
+  - Critical: Catches issues early (cheaper to fix in design than code)
+  - Recommended: Run BEFORE database/test/implementation steps
+
+- B) **Database Schema** → Invoke `database-schema` skill
   - Purpose: Generate SQL schemas, migrations, indexes, seed data (for Golang/backend projects)
   - When to use: If this feature involves data persistence (most features do)
   - Output: production-ready DDL, migration pairs, repository interfaces
   - Note: Should be created BEFORE implementation scaffolding for backend
   - Pre-requisites: Technical spec must define data model/entities
 
-- B) **Test Strategy (Stage 7)** → Invoke `test-strategy` skill
+- C) **Test Strategy (Stage 7)** → Invoke `test-strategy` skill
   - Purpose: Define comprehensive testing approach (unit, integration, E2E, accessibility, smoke tests)
   - Output: Test strategy document with real code examples, BDD scenarios, coverage targets, CI/CD integration
   - Recommended: Generates smoke tests that feed into deployment pipeline
   - After: Can then proceed to Deployment Specs (Stage 8)
+  - Security Note: Includes security test cases (auth, injection, XSS, CSRF)
 
-- C) **Deployment Specifications (Stage 8)** → Invoke `deployment-specs` skill
+- D) **Deployment Specifications (Stage 8)** → Invoke `deployment-specs` skill
   - Purpose: Generate cloud-specific infrastructure configs (Terraform, CI/CD pipelines, secrets strategy)
   - Targets: Azure, AWS, or DigitalOcean
   - Context: Uses app type, ports, health endpoints, environment variables from this spec
   - Note: Can integrate smoke tests from separate test-strategy if created
 
-- D) **Generate in sequence (recommended)** → Database Schema → Test Strategy → Deployment Specs
-  - Sequence: Specify → Database → Test → Deploy
-  - Result: Complete technical pipeline with schemas, testing, and deployment
-  - Flow: Full SDLC from technical specs to production deployment
+- E) **Generate in sequence (RECOMMENDED)** → Security Validation → Database Schema → Test Strategy → Deployment Specs
+  - Sequence: Spec → Security Review → Database → Test → Deploy
+  - Result: Complete secure technical pipeline with validation at each step
+  - Flow: Full SDLC from specs through production with security-first approach
 
-- E) **Implementation Scaffolding** → Invoke `implementation-scaffolding` skill (standalone)
+- F) **Implementation Scaffolding** → Invoke `implementation-scaffolding` skill (standalone)
   - Purpose: Generate project boilerplate structure ready for coding
   - React: Asks for preferred folder structure (Atomic Design, Feature-Based, Page-Based, Flat)
   - Golang: Always clean-architecture with dependency injection setup
   - Output: Directory tree, config files, stub components/handlers, testing setup
   - Use case: After specs are done OR standalone for quick project kickstart
+  - Note: Includes security hardening recommendations from checklist
 
-- F) **No** → Technical spec is complete. Save and exit.
+- G) **No** → Technical spec is complete. Save and exit.
 
-**Recommended full SDLC flow:**
-Database Schema (if backend) → Test Strategy (Stage 7) → Deployment Specs (Stage 8), where smoke tests from Stage 7 integrate into the CI/CD pipeline definition in Stage 8.
+**Recommended full SDLC flow (SECURITY-FIRST):**
+Security Validation → Database Schema (if backend) → Test Strategy (Stage 7) → Deployment Specs (Stage 8)
 
 **For immediate development kickstart:**
-Database Schema + Implementation Scaffolding + Test Strategy, then deploy with deployment-specs.
+Security Validation + Database Schema + Implementation Scaffolding + Test Strategy, then deploy with deployment-specs.
 
 ## Reference Standards Integration
 

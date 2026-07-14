@@ -199,4 +199,4 @@ Next: Architecture (arc42)
 
 **Model:** Claude (Opus, Sonnet, or Haiku)
 **Invocation:** Model-invoked based on trigger keywords
-**Dependencies:** product-design, functional-specs, technical-specs, test-strategy, deployment-specs + optional database-schema, implementation-scaffolding, observability-specs, harness-setup + existing arc42-doc, arch-review, atam-facilitator
+**Dependencies:** product-design, functional-specs, technical-specs, test-strategy, deployment-specs, security-validation + optional database-schema, implementation-scaffolding, observability-specs, harness-setup + existing arc42-doc, arch-review, atam-facilitator
