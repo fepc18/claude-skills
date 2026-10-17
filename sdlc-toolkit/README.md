@@ -1,26 +1,44 @@
 # SDLC Toolkit Plugin
 
-A comprehensive Software Development Lifecycle (SDLC) plugin for Claude that guides development projects from concept to code-ready specifications.
+A comprehensive Software Development Lifecycle (SDLC) plugin for Claude that guides products through the full lifecycle: from problem validation, through code-ready specifications and deployment, to go-to-market and growth.
 
 ## Overview
 
 The **sdlc-toolkit** plugin provides an orchestrated pipeline for developing software products, covering:
 
+**Phase A · Discover**
+0. **Product Discovery** — Problem validation, JTBD, competitors, TAM/SAM/SOM, Lean Canvas, riskiest assumptions, Go/Pivot/Kill
 1. **Product Design** — PRD creation with personas, features, user stories
+
+**Phase B · Build**
 2. **Architecture Documentation** — arc42 system design documents
 3. **Architecture Evaluation** — ATAM quality attribute trade-off analysis
 4. **Architecture Review** — Gap identification and improvement recommendations
 5. **Functional Specifications** — Feature specs with flows, acceptance criteria, wireframes
 6. **Technical Specifications** — Code-ready specs (API contracts, component designs, database schemas)
+7. **Test Strategy** — Unit, integration, E2E, accessibility, performance and smoke tests
+8. **Deployment Specs** — Cloud infrastructure (Terraform, Bicep, CloudFormation) and CI/CD
+
+**Phase C · Launch & Grow**
+9. **Product Analytics** — North Star Metric, AARRR, tracking plan, typed instrumentation
+10. **Go-to-Market** — ICP, positioning, messaging, pricing & packaging, launch plan (alpha → beta → GA)
+11. **Growth Strategy** — Growth model, loops, retention/activation levers, experiment backlog, feedback loop
 
 ## Features
 
 ### Skills Included
 
 - **`sdlc-orchestrator`** — Master skill that guides you through the complete pipeline
+- **`product-discovery`** — Validates the problem and market opportunity before the PRD
 - **`product-design`** — Creates comprehensive Product Requirements Documents
 - **`functional-specs`** — Generates detailed feature specifications
 - **`technical-specs`** — Produces code-ready technical designs
+- **`test-strategy`** — Testing strategy with real code and smoke tests
+- **`deployment-specs`** — Cloud deployment infrastructure and CI/CD
+- **`product-analytics`** — Measurement plan: North Star, metrics, tracking plan, instrumentation
+- **`go-to-market`** — GTM strategy and phased launch plan
+- **`growth-strategy`** — Post-launch growth system and experimentation
+- Complementary: **`database-schema`**, **`implementation-scaffolding`**, **`observability-specs`**, **`security-validation`**, **`harness-setup`**
 
 ### Reused Skills
 
@@ -52,13 +70,18 @@ sdlc
 
 Claude will guide you through:
 1. Gathering project context (name, description, stakeholders)
-2. Presenting the 6-stage pipeline
+2. Presenting the 12-stage pipeline (Discover → Build → Launch & Grow)
 3. Invoking skills sequentially (or letting you jump to any stage)
 4. Tracking progress and saving outputs
 
 ### Individual Skills
 
 You can also invoke skills independently:
+
+**Product Discovery:**
+```
+Quiero validar si vale la pena construir un sistema de citas para clínicas pequeñas
+```
 
 **Product Design:**
 ```
@@ -73,6 +96,21 @@ Generate functional specs for the user registration feature
 **Technical Specifications:**
 ```
 Design the technical specs for the payment processing microservice
+```
+
+**Product Analytics:**
+```
+Define la North Star y el tracking plan para la app de historia clínica
+```
+
+**Go-to-Market:**
+```
+Arma el plan de lanzamiento y precios para el módulo de facturación electrónica
+```
+
+**Growth Strategy:**
+```
+Our activation is 22% and churn 6%/month — build a growth plan with experiments
 ```
 
 ## Documentation Structure
@@ -193,24 +231,40 @@ All designs follow:
 ### How Skills Work Together
 
 ```
-1. sdlc-orchestrator (user entry point)
+sdlc-orchestrator (user entry point)
    ↓
-2. product-design → outputs [project]-prd.md
+── Phase A · Discover ──
+0. product-discovery → outputs [project]-discovery-brief.md (Go / Pivot / Kill)
    ↓
-3. arc42-doc → inputs PRD, outputs [project]-arc42.md
+1. product-design → inputs brief, outputs [project]-prd.md
    ↓
-4. atam-facilitator → inputs arc42, outputs [project]-atam.md
+── Phase B · Build ──
+2. arc42-doc → inputs PRD, outputs [project]-arc42.md
    ↓
-5. arch-review → inputs arc42 + ATAM, outputs [project]-arch-review.md
+3. atam-facilitator → inputs arc42, outputs [project]-atam.md
    ↓
-6. functional-specs → inputs PRD + arch, outputs [feature]-functional-spec.md
+4. arch-review → inputs arc42 + ATAM, outputs [project]-arch-review.md
    ↓
-7. technical-specs → inputs functional-spec + standards, outputs [feature]-technical-spec.md
+5. functional-specs → inputs PRD + arch, outputs [feature]-functional-spec.md
+   ↓
+6. technical-specs → inputs functional-spec + standards, outputs [feature]-technical-spec.md
+   ↓
+7. test-strategy → outputs [project]-test-strategy.md
+   ↓
+8. deployment-specs → outputs [project]-[cloud]-deployment-spec.md
+   ↓
+── Phase C · Launch & Grow ──
+9. product-analytics → outputs [project]-measurement-plan.md (ideally alongside 5–6)
+   ↓
+10. go-to-market → outputs [project]-gtm-plan.md
+   ↓
+11. growth-strategy → outputs [project]-growth-plan.md
+   ↺ learnings feed back into 0–1 for the next iteration
 ```
 
 ### Flexibility
 
-- **Sequential:** Follow the 6-stage pipeline in order
+- **Sequential:** Follow the 12-stage pipeline in order
 - **Jumping:** Skip to any stage (e.g., "skip to functional specs")
 - **Independent:** Use any skill standalone (don't need orchestrator)
 - **Iteration:** Return to earlier stages to refine outputs
@@ -318,6 +372,12 @@ For issues or feedback:
 
 ## Version History
 
+### v1.1.0 (2026-10-17)
+- Pipeline extended to the full product lifecycle: 12 stages in 3 phases (Discover → Build → Launch & Grow)
+- New skills: `product-discovery` (Stage 0), `product-analytics` (Stage 9), `go-to-market` (Stage 10), `growth-strategy` (Stage 11)
+- Orchestrator: phase-grouped pipeline, decision gates, parallel-track recommendations, growth → discovery feedback loop
+- `product-design` now consumes the discovery brief
+
 ### v1.0.0 (2026-07-01)
 - Initial release
 - 4 new skills (orchestrator, product-design, functional-specs, technical-specs)
@@ -330,6 +390,6 @@ Provided as part of Claude Code. Use freely for your projects.
 
 ---
 
-**Last Updated:** 2026-07-01
+**Last Updated:** 2026-10-17
 **Maintained by:** Felipe Pabón
 **Status:** Stable

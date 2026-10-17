@@ -2,9 +2,9 @@
 
 ## Overview
 
-**sdlc-toolkit** is a comprehensive software development lifecycle plugin that provides 12 specialized skills orchestrating a complete pipeline from product concept to production deployment with safety guardrails.
+**sdlc-toolkit** is a comprehensive software development lifecycle plugin that orchestrates a 12-stage product lifecycle in 3 phases — **Discover → Build → Launch & Grow** — from problem validation to production deployment, go-to-market and growth, plus complementary skills for acceleration and safety guardrails.
 
-**Problem Solved:** Teams lack structured methodology to bridge gap between vision → specification → implementation → deployment. Results in misalignment, rework, inadequate testing, unsafe deployments.
+**Problem Solved:** Teams lack structured methodology to bridge gap between validated problem → specification → implementation → deployment → launch → growth. Results in misalignment, rework, inadequate testing, unsafe deployments.
 
 **Solution:** Sequential workflow with specialized skills, each producing auditable deliverables aligned to industry standards (clean architecture, security rules, cloud conventions).
 
@@ -12,7 +12,8 @@
 
 ## Core Philosophy
 
-- **Structured but Flexible:** 8-stage core pipeline + 4 optional complementary skills
+- **Structured but Flexible:** 12-stage core pipeline (3 phases) + optional complementary skills
+- **Full Product Lifecycle:** Building is not the finish line — products are validated before building and measured, launched and grown after deploying
 - **Production-Ready Outputs:** Every skill generates real, executable code/config (not pseudocode)
 - **Reference-Based:** All outputs comply with project's reference standards (golang-standards.md, react-standards.md, security-rules.md, cloud-standards.md, clean-architecture.md)
 - **Autonomous Delegation:** Harness Engineering enables safe Claude Code autonomy with guardrails
@@ -20,9 +21,18 @@
 
 ---
 
-## 12 Skills Architecture
+## Skills Architecture
 
-### TIER 1: Core SDLC Pipeline (8 Stages — Sequential)
+### PHASE A: Discover (Stages 0–1)
+
+#### Stage 0: product-discovery
+- **Purpose:** Validate WHETHER to build — problem, customer and opportunity
+- **Inputs:** Idea, evidence (interviews, data), business context
+- **Outputs:** Discovery brief — problem statement, Jobs-to-be-Done, evidence log, competitive landscape, TAM/SAM/SOM (bottom-up), Lean Canvas, Opportunity Solution Tree, riskiest assumptions, validation experiments, interview guide, Go / Pivot / Kill recommendation
+- **Decision gate:** Pivot/Kill stops the pipeline before the PRD
+- **Output Location:** `[project-name]-discovery-brief.md`
+
+### TIER 1: Core SDLC Pipeline (Stages 1–8 — Sequential)
 
 #### Stage 1: product-design
 - **Purpose:** Define WHAT to build
@@ -106,9 +116,33 @@
 
 ---
 
+### PHASE C: Launch & Grow (Stages 9–11)
+
+#### Stage 9: product-analytics
+- **Purpose:** Define HOW product success is measured (product health, not system health — see observability-specs)
+- **Inputs:** PRD success criteria, functional specs flows, discovery brief
+- **Outputs:** Measurement plan — North Star Metric + metric tree, AARRR metrics with formulas/owners, HEART per feature, identity model, event catalog (tracking plan), typed React `useTrack()` wrapper, Golang `EventPublisher` port + adapter, dashboards, privacy/PII governance
+- **Timing:** Best run right after Stage 5 so events become requirements in Stage 6 and are tested in Stage 7
+- **References:** security-rules.md, react-standards.md, golang-standards.md, clean-architecture.md
+- **Output Location:** `[project-name]-measurement-plan.md`
+
+#### Stage 10: go-to-market
+- **Purpose:** Bring the product to market
+- **Inputs:** Discovery brief, PRD, measurement plan, deployment spec
+- **Outputs:** GTM plan — ICP + buying roles, positioning (April Dunford), messaging per persona, pricing & packaging (value metric, tiers, local taxes/payments), sales motion (PLG / sales-led / partner-led), channel priorities, launch tier, alpha → beta → GA phases with go/no-go criteria, T-8w → T+30d timeline, sales/support/legal/billing readiness, launch KPIs, risks
+- **Output Location:** `[project-name]-gtm-plan.md`
+
+#### Stage 11: growth-strategy
+- **Purpose:** Build a repeatable growth system after launch, and close the lifecycle loop
+- **Inputs:** Measurement plan, GTM plan, live product data
+- **Outputs:** Growth plan — PMF check, growth model equation with sensitivity analysis, funnel diagnosis, growth loops, levers per stage (activation, retention, churn, expansion, referral), ICE/RICE experiment backlog, A/B test design with sample size, operating rhythm, feedback loop into discovery/PRD/specs, 90-day targets
+- **Output Location:** `[project-name]-growth-plan.md`
+
+---
+
 ### TIER 2: Optional Complementary Skills (Acceleration & Execution)
 
-#### Skill 9: database-schema
+#### database-schema
 - **Purpose:** Generate production-ready SQL schemas, migrations, indexes
 - **When to Use:** After Stage 6, before implementation if backend/database involved
 - **Inputs:** Technical specs (data models, entities)
@@ -131,7 +165,7 @@
 - **Bridge:** Implementation Scaffolding (generates repository implementations)
 - **Output Location:** `/sessions/[session-id]/mnt/outputs/[project-name]-database-schema.md`
 
-#### Skill 10: implementation-scaffolding
+#### implementation-scaffolding
 - **Purpose:** Generate complete project boilerplate ready for coding
 - **When to Use:** Standalone or after Stages 6-8
 - **Inputs:** Stack (Golang/React/Full-Stack), project name, features to scaffold
@@ -167,7 +201,7 @@
 - **References:** clean-architecture.md, react-standards.md, golang-standards.md
 - **Output Location:** `/sessions/[session-id]/mnt/outputs/[project-name]-scaffolding/`
 
-#### Skill 11: observability-specs
+#### observability-specs
 - **Purpose:** Generate production monitoring strategy (logging, metrics, alerts, dashboards, SLO/SLI)
 - **When to Use:** After Stage 8 (deployment specs complete)
 - **Inputs:** Stack type (Golang/React/Full-Stack), cloud platform, compliance requirements
@@ -199,7 +233,7 @@
 - **References:** cloud-standards.md, security-rules.md, golang-standards.md, react-standards.md
 - **Output Location:** `/sessions/[session-id]/mnt/outputs/[project-name]-observability-specs.md`
 
-#### Skill 12: harness-setup
+#### harness-setup
 - **Purpose:** Generate Claude Code guardrails for safe autonomous delegation
 - **When to Use:** After any/all stages when ready to delegate work to Claude Code
 - **Inputs:** Project name, tech stack, critical paths, conventions, test commands
@@ -240,12 +274,12 @@
 
 ## Master Orchestrator Skill: sdlc-orchestrator
 
-**Purpose:** Guides users through all 8 stages sequentially, maintains progress state, offers optional skills
+**Purpose:** Guides users through all 12 stages (3 phases) sequentially, maintains progress state, offers optional skills
 
 **Workflow:**
 1. Initialization (project name, description, stakeholders, scope)
-2. Present 8-stage pipeline visualization with status
-3. Sequential execution (Stage 1 → 2 → ... → 8)
+2. Present 12-stage pipeline visualization grouped by phase
+3. Sequential execution (Stage 0 → 1 → ... → 11), with decision gates after Stage 0 (Go/Pivot/Kill), Stage 4 (critical gaps) and Stage 10 (launch go/no-go)
 4. After each stage: mark complete, show next stage, ask to continue
 5. At completion: offer optional skills (database-schema, implementation-scaffolding, observability-specs, harness-setup)
 6. Export full project documentation bundle
@@ -261,6 +295,8 @@
 ## Data Flow & Integration
 
 ```
+[0] product-discovery → Discovery Brief (Go / Pivot / Kill)
+         ↓
 [1] product-design → PRD
          ↓
 [2] arc42-doc → Architecture
@@ -284,13 +320,28 @@
     │   harness-setup → CLAUDE.md + Hooks (Safe Delegation)
     │
     └─→ [Ready for Implementation]
+         ↓
+[9]  product-analytics → North Star + Tracking Plan   (ideally in parallel with [5]–[6])
+         ↓
+[10] go-to-market → Positioning, Pricing, Launch Plan
+         ↓
+[11] growth-strategy → Growth Model, Loops, Experiments
+         ↺ learnings → [0] product-discovery / [1] product-design (next iteration)
 ```
 
 **Recommended Sequences:**
 
-**Full SDLC (8 stages):**
-1. product-design → arc42-doc → atam-facilitator → arch-review
-2. functional-specs → technical-specs → test-strategy → deployment-specs
+**Full Lifecycle (12 stages):**
+1. product-discovery → product-design
+2. arc42-doc → atam-facilitator → arch-review
+3. functional-specs → technical-specs → test-strategy → deployment-specs
+4. product-analytics → go-to-market → growth-strategy
+
+**For an Existing Product Going to Market:**
+1. product-analytics → go-to-market → growth-strategy
+
+**For a New Idea (validate before investing):**
+1. product-discovery → (Go) → product-design
 
 **For Implementation Kickstart:**
 1. technical-specs → database-schema → implementation-scaffolding → test-strategy
@@ -412,7 +463,7 @@ All skills save outputs to `/sessions/[session-id]/mnt/outputs/` with predictabl
 
 ## Quick Start Examples
 
-### Example 1: Full SDLC (8 stages)
+### Example 1: Full Lifecycle (12 stages)
 ```
 User: "Help me design a new project: expense tracking SPA"
 
@@ -521,7 +572,7 @@ A: You can override. The toolkit provides best practices, but teams have their o
 
 ## Version & Status
 
-- **Current:** Full 12-skill suite (8 core + 4 complementary + 1 orchestrator)
+- **Current (v1.1.0):** 12-stage lifecycle (9 own skills + 3 reused) + 5 complementary skills + orchestrator — adds Discover and Launch & Grow phases
 - **Tested:** All code examples verified to compile/run
 - **Maintained:** Regular updates to match evolving best practices
 - **Integration:** Works with Claude Code (Claude Opus, Sonnet, Haiku models)
@@ -544,7 +595,7 @@ A: You can override. The toolkit provides best practices, but teams have their o
    - Check cloud-standards.md for deployment patterns
 
 3. **Generate Incrementally**
-   - Don't try to do all 8 stages at once
+   - Don't try to do all 12 stages at once
    - Complete one stage, then move to next
    - Iterate within each stage if needed
 

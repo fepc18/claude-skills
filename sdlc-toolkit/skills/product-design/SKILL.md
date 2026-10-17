@@ -7,7 +7,6 @@ triggers:
   - prd
   - product requirements document
   - documento de producto
-  - discovery
   - definir el producto
   - vision del producto
   - product design
@@ -30,6 +29,8 @@ Generate a comprehensive Product Requirements Document (PRD) that captures:
 ## Workflow
 
 ### 1. Gathering Information
+If a discovery brief (`*-discovery-brief.md` from `product-discovery`) exists, read it first and reuse its validated problem, segments, value proposition and riskiest assumptions — only ask about what it doesn't cover. If there's no brief and the idea looks unvalidated, briefly suggest running `product-discovery` first (the user can decline).
+
 Ask the user a series of questions to collect product context:
 
 **Core Product Definition:**
@@ -211,7 +212,8 @@ If the user asks for adjustments:
 ## Dependencies & Context
 
 **Used by:** sdlc-orchestrator (Stage 1)
-**Feeds into:** arc42-doc (architecture design uses PRD as input)
+**Inputs from:** product-discovery (Stage 0 discovery brief), growth-strategy (learnings for PRD v2)
+**Feeds into:** arc42-doc (architecture design uses PRD as input), product-analytics (success criteria → North Star), go-to-market (personas, value proposition)
 **References:** None (PRD is input to downstream specs)
 
 **Output location:** `/sessions/[session-id]/mnt/outputs/[project-name]-prd.md`
