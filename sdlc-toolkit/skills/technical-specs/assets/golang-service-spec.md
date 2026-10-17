@@ -997,7 +997,7 @@ Este microservicio es compatible con todos los principales cloud providers:
 | RAM mínimo | 0.5Gi | 512 MB | 512 MB |
 | Gestión de secretos | Azure Key Vault (Managed Identity) | AWS Secrets Manager (Task IAM Role) | DO App Platform env (type: SECRET) |
 
-**Para generar las specs de infraestructura completas:** Invocar el skill `deployment-specs` o continuar al Stage 7 del sdlc-orchestrator.
+**Para generar las specs de infraestructura completas:** Invocar el skill `deployment-specs` o continuar al Stage 9 del sdlc-orchestrator.
 Ver: `../../skills/deployment-specs/SKILL.md`
 
 ### 11.5 Environment Variables

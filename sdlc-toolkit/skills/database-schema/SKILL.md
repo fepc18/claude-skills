@@ -220,7 +220,7 @@ If the user asks for adjustments:
 
 ## Dependencies & Context
 
-**Used by:** Technical Specs (Stage 6) users who need detailed SQL, standalone for database-only projects
+**Used by:** Technical Specs (Stage 7) users who need detailed SQL, standalone for database-only projects
 **Feeds into:** Implementation Scaffolding (generates Go repository stubs) or direct to developers for database setup
 **References:**
 - `../../references/golang-standards.md` (UUID, sqlx, parameterized queries, index naming)

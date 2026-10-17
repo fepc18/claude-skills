@@ -15,14 +15,15 @@ The **sdlc-toolkit** plugin provides an orchestrated pipeline for developing sof
 3. **Architecture Evaluation** — ATAM quality attribute trade-off analysis
 4. **Architecture Review** — Gap identification and improvement recommendations
 5. **Functional Specifications** — Feature specs with flows, acceptance criteria, wireframes
-6. **Technical Specifications** — Code-ready specs (API contracts, component designs, database schemas)
-7. **Test Strategy** — Unit, integration, E2E, accessibility, performance and smoke tests
-8. **Deployment Specs** — Cloud infrastructure (Terraform, Bicep, CloudFormation) and CI/CD
+6. **UX/UI Design** — User flows, design system, mockups with all states, accessibility; respects the existing UI in existing products, React + Tailwind + shadcn/ui for new ones
+7. **Technical Specifications** — Code-ready specs (API contracts, component designs, database schemas)
+8. **Test Strategy** — Unit, integration, E2E, accessibility, performance and smoke tests
+9. **Deployment Specs** — Cloud infrastructure (Terraform, Bicep, CloudFormation) and CI/CD
 
 **Phase C · Launch & Grow**
-9. **Product Analytics** — North Star Metric, AARRR, tracking plan, typed instrumentation
-10. **Go-to-Market** — ICP, positioning, messaging, pricing & packaging, launch plan (alpha → beta → GA)
-11. **Growth Strategy** — Growth model, loops, retention/activation levers, experiment backlog, feedback loop
+10. **Product Analytics** — North Star Metric, AARRR, tracking plan, typed instrumentation
+11. **Go-to-Market** — ICP, positioning, messaging, pricing & packaging, launch plan (alpha → beta → GA)
+12. **Growth Strategy** — Growth model, loops, retention/activation levers, experiment backlog, feedback loop
 
 ## Features
 
@@ -32,6 +33,7 @@ The **sdlc-toolkit** plugin provides an orchestrated pipeline for developing sof
 - **`product-discovery`** — Validates the problem and market opportunity before the PRD
 - **`product-design`** — Creates comprehensive Product Requirements Documents
 - **`functional-specs`** — Generates detailed feature specifications
+- **`ux-ui-design`** — Designs flows, design system and mockups (existing-product and new-product modes)
 - **`technical-specs`** — Produces code-ready technical designs
 - **`test-strategy`** — Testing strategy with real code and smoke tests
 - **`deployment-specs`** — Cloud deployment infrastructure and CI/CD
@@ -70,7 +72,7 @@ sdlc
 
 Claude will guide you through:
 1. Gathering project context (name, description, stakeholders)
-2. Presenting the 12-stage pipeline (Discover → Build → Launch & Grow)
+2. Presenting the 13-stage pipeline (Discover → Build → Launch & Grow)
 3. Invoking skills sequentially (or letting you jump to any stage)
 4. Tracking progress and saving outputs
 
@@ -247,24 +249,26 @@ sdlc-orchestrator (user entry point)
    ↓
 5. functional-specs → inputs PRD + arch, outputs [feature]-functional-spec.md
    ↓
-6. technical-specs → inputs functional-spec + standards, outputs [feature]-technical-spec.md
+6. ux-ui-design → inputs PRD + functional-spec (+ existing UI code), outputs [project]-ux-ui-design.md + design artifacts
    ↓
-7. test-strategy → outputs [project]-test-strategy.md
+7. technical-specs → inputs functional-spec + design + standards, outputs [feature]-technical-spec.md
    ↓
-8. deployment-specs → outputs [project]-[cloud]-deployment-spec.md
+8. test-strategy → outputs [project]-test-strategy.md
+   ↓
+9. deployment-specs → outputs [project]-[cloud]-deployment-spec.md
    ↓
 ── Phase C · Launch & Grow ──
-9. product-analytics → outputs [project]-measurement-plan.md (ideally alongside 5–6)
+10. product-analytics → outputs [project]-measurement-plan.md (ideally alongside 5–7)
    ↓
-10. go-to-market → outputs [project]-gtm-plan.md
+11. go-to-market → outputs [project]-gtm-plan.md
    ↓
-11. growth-strategy → outputs [project]-growth-plan.md
+12. growth-strategy → outputs [project]-growth-plan.md
    ↺ learnings feed back into 0–1 for the next iteration
 ```
 
 ### Flexibility
 
-- **Sequential:** Follow the 12-stage pipeline in order
+- **Sequential:** Follow the 13-stage pipeline in order
 - **Jumping:** Skip to any stage (e.g., "skip to functional specs")
 - **Independent:** Use any skill standalone (don't need orchestrator)
 - **Iteration:** Return to earlier stages to refine outputs
@@ -371,6 +375,12 @@ For issues or feedback:
 - Attach: example input and expected output
 
 ## Version History
+
+### v1.2.0 (2026-10-17)
+- New skill `ux-ui-design` (Stage 6): flows, information architecture, design system, mockups with all states, WCAG 2.2 AA, usability test plan, component map
+- Two modes: existing product (respect current stack and visual language) and new product (React + Tailwind + shadcn/ui); uses Claude Design System / Design artifacts when available; Impeccable for diagnostics or polish
+- Pipeline is now 13 stages; stages from Technical Specs onward renumbered (+1)
+- `technical-specs` consumes the design spec's component map, tokens and UI stack mode
 
 ### v1.1.0 (2026-10-17)
 - Pipeline extended to the full product lifecycle: 12 stages in 3 phases (Discover → Build → Launch & Grow)

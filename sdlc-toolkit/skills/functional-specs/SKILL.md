@@ -341,7 +341,7 @@ Before returning the spec to the user:
 ## Dependencies & Context
 
 **Used by:** sdlc-orchestrator (Stage 5), can be used independently
-**Feeds into:** technical-specs (technical design uses functional specs as input)
+**Feeds into:** ux-ui-design (flows and acceptance criteria become screens and states), technical-specs (technical design uses functional specs as input)
 **References:** PRD (for personas, priorities), security-rules.md (for auth, validation)
 
 **Output location:** `/sessions/[session-id]/mnt/outputs/[feature-name]-functional-spec.md`

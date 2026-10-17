@@ -42,6 +42,8 @@ All technical specs MUST comply with these standards.
 ## Workflow
 
 ### 1. Feature Context
+If a UX/UI design spec exists (`*-ux-ui-design.md` from `ux-ui-design`), read it first: its **component map** becomes the React component tree, its **tokens** define the styling setup, and its **mode** decides the stack — in an existing product use the libraries and components already there (don't introduce a new UI library), in a new product use the stack it defines (React + Tailwind + shadcn/ui). Every screen state it lists (empty, loading, error, no permission) needs a place in the component design.
+
 Ask the user:
 - "What feature are you designing the technical specs for?" (should reference functional spec)
 - "Is this React frontend, Golang backend, or both?" (or database design)
@@ -122,14 +124,14 @@ Options:
   - Note: Should be created BEFORE implementation scaffolding for backend
   - Pre-requisites: Technical spec must define data model/entities
 
-- C) **Test Strategy (Stage 7)** → Invoke `test-strategy` skill
+- C) **Test Strategy (Stage 8)** → Invoke `test-strategy` skill
   - Purpose: Define comprehensive testing approach (unit, integration, E2E, accessibility, smoke tests)
   - Output: Test strategy document with real code examples, BDD scenarios, coverage targets, CI/CD integration
   - Recommended: Generates smoke tests that feed into deployment pipeline
-  - After: Can then proceed to Deployment Specs (Stage 8)
+  - After: Can then proceed to Deployment Specs (Stage 9)
   - Security Note: Includes security test cases (auth, injection, XSS, CSRF)
 
-- D) **Deployment Specifications (Stage 8)** → Invoke `deployment-specs` skill
+- D) **Deployment Specifications (Stage 9)** → Invoke `deployment-specs` skill
   - Purpose: Generate cloud-specific infrastructure configs (Terraform, CI/CD pipelines, secrets strategy)
   - Targets: Azure, AWS, or DigitalOcean
   - Context: Uses app type, ports, health endpoints, environment variables from this spec
@@ -151,7 +153,7 @@ Options:
 - G) **No** → Technical spec is complete. Save and exit.
 
 **Recommended full SDLC flow (SECURITY-FIRST):**
-Security Validation → Database Schema (if backend) → Test Strategy (Stage 7) → Deployment Specs (Stage 8)
+Security Validation → Database Schema (if backend) → Test Strategy (Stage 8) → Deployment Specs (Stage 9)
 
 **For immediate development kickstart:**
 Security Validation + Database Schema + Implementation Scaffolding + Test Strategy, then deploy with deployment-specs.
@@ -370,10 +372,11 @@ If the user asks for adjustments:
 
 ## Dependencies & Context
 
-**Used by:** sdlc-orchestrator (Stage 6), can be used independently
+**Used by:** sdlc-orchestrator (Stage 7), can be used independently
+**Inputs from:** functional-specs (Stage 5), ux-ui-design (Stage 6: component map, tokens, UI stack mode)
 **Feeds into:**
 - Implementation (developers use these specs to code)
-- `deployment-specs` skill (Stage 7): this technical spec provides app type, service ports, health endpoints, and environment variables that the deployment-specs skill consumes to generate cloud infrastructure
+- `deployment-specs` skill (Stage 9): this technical spec provides app type, service ports, health endpoints, and environment variables that the deployment-specs skill consumes to generate cloud infrastructure
 **References:**
 - `../../references/security-rules.md` (auth, validation, error handling)
 - `../../references/clean-architecture.md` (layer separation, patterns)

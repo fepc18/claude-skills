@@ -117,7 +117,7 @@ Filename: `[project-name]-growth-plan.md`, saved to the outputs directory (Cowor
 
 ## Dependencies & Context
 
-**Used by:** sdlc-orchestrator (Stage 11 — closes the loop back to Stage 0)
+**Used by:** sdlc-orchestrator (Stage 12 — closes the loop back to Stage 0)
 **Inputs:** measurement plan (NSM, events), GTM plan (ICP, channels, pricing), live product data
 **Feeds into:** `product-discovery` and `product-design` (next iteration), `functional-specs` (winning experiments)
 **Output:** `[project-name]-growth-plan.md`

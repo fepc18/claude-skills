@@ -285,7 +285,7 @@ If the user asks for adjustments:
 
 ## Dependencies & Context
 
-**Used by:** After deployment-specs (Stage 8), as optional Stage 8.5 for production visibility
+**Used by:** After deployment-specs (Stage 9), as optional Stage 9.5 for production visibility
 **Feeds into:** Monitoring dashboards, alerting system, SLO tracking in production
 **References:**
 - `../../references/cloud-standards.md` (health endpoints port 8081, zero PII in logs)

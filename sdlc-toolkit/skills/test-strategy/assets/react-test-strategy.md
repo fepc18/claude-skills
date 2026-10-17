@@ -1194,4 +1194,4 @@ Use this checklist before marking the feature as testable:
 
 ---
 
-**Next Step:** After test strategy is approved, proceed to Stage 8: **Deployment Specifications** where the smoke test suite defined here will be integrated into CI/CD pipelines for Azure, AWS, or DigitalOcean.
+**Next Step:** After test strategy is approved, proceed to Stage 9: **Deployment Specifications** where the smoke test suite defined here will be integrated into CI/CD pipelines for Azure, AWS, or DigitalOcean.

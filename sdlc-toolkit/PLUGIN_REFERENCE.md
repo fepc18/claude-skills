@@ -2,7 +2,7 @@
 
 ## Overview
 
-**sdlc-toolkit** is a comprehensive software development lifecycle plugin that orchestrates a 12-stage product lifecycle in 3 phases — **Discover → Build → Launch & Grow** — from problem validation to production deployment, go-to-market and growth, plus complementary skills for acceleration and safety guardrails.
+**sdlc-toolkit** is a comprehensive software development lifecycle plugin that orchestrates a 13-stage product lifecycle in 3 phases — **Discover → Build → Launch & Grow** — from problem validation to production deployment, go-to-market and growth, plus complementary skills for acceleration and safety guardrails.
 
 **Problem Solved:** Teams lack structured methodology to bridge gap between validated problem → specification → implementation → deployment → launch → growth. Results in misalignment, rework, inadequate testing, unsafe deployments.
 
@@ -12,7 +12,7 @@
 
 ## Core Philosophy
 
-- **Structured but Flexible:** 12-stage core pipeline (3 phases) + optional complementary skills
+- **Structured but Flexible:** 13-stage core pipeline (3 phases) + optional complementary skills
 - **Full Product Lifecycle:** Building is not the finish line — products are validated before building and measured, launched and grown after deploying
 - **Production-Ready Outputs:** Every skill generates real, executable code/config (not pseudocode)
 - **Reference-Based:** All outputs comply with project's reference standards (golang-standards.md, react-standards.md, security-rules.md, cloud-standards.md, clean-architecture.md)
@@ -32,7 +32,7 @@
 - **Decision gate:** Pivot/Kill stops the pipeline before the PRD
 - **Output Location:** `[project-name]-discovery-brief.md`
 
-### TIER 1: Core SDLC Pipeline (Stages 1–8 — Sequential)
+### TIER 1: Core SDLC Pipeline (Stages 1–9 — Sequential)
 
 #### Stage 1: product-design
 - **Purpose:** Define WHAT to build
@@ -66,7 +66,18 @@
 - **Workflow:** Feature selection → User stories → Acceptance criteria → Test scenarios → Wireframes → Generate spec
 - **References:** None (bridges PRD → Technical Specs)
 
-#### Stage 6: technical-specs
+#### Stage 6: ux-ui-design
+- **Purpose:** Define what the user SEES and DOES, screen by screen
+- **Inputs:** PRD, functional specs, measurement plan events; existing frontend code for existing products
+- **Outputs:** UX/UI design spec — user flows (Mermaid), screen inventory + navigation, design system (tokens + component inventory), wireframes → mockups with all states (empty, loading, error, no permission), WCAG 2.2 AA requirements, usability test plan, component map for technical-specs
+- **Two modes:**
+  - *Existing product* — respects the current stack and visual language (e.g., Bootstrap 5 + react-bootstrap + SCSS); extracts its design system, logs inconsistencies as design debt, Impeccable only for diagnostics
+  - *New product* — React + TypeScript + Tailwind + shadcn/ui (Radix) + lucide + TanStack Table + React Hook Form/Zod; tokens as CSS variables (light/dark); Impeccable for polish
+- **Where designs live:** Claude **Design System** and **Design** artifacts when available; otherwise token files + HTML mockups in the real stack
+- **Skip when:** backend-only work
+- **Output Location:** `[project-name]-ux-ui-design.md`
+
+#### Stage 7: technical-specs
 - **Purpose:** Generate CODE-READY specifications
 - **Inputs:** Functional specs + Architecture + Reference standards
 - **Outputs:**
@@ -79,7 +90,7 @@
 - **References:** golang-standards.md, react-standards.md, security-rules.md, clean-architecture.md
 - **Bridge Options:** Database Schema → Test Strategy → Deployment Specs (recommended sequence)
 
-#### Stage 7: test-strategy
+#### Stage 8: test-strategy
 - **Purpose:** Define comprehensive testing approach with code examples
 - **Inputs:** Technical specs (API contracts, component tree, env vars)
 - **Outputs:**
@@ -88,16 +99,16 @@
   - BDD scenarios (Gherkin format)
   - Coverage targets by module
   - CI/CD integration guide
-  - **Smoke test suite** (feeds into Stage 8)
+  - **Smoke test suite** (feeds into Stage 9)
 - **Golang Pattern:** Table-driven tests, mocking via interfaces, integration tests with testcontainers
 - **React Pattern:** Vitest + React Testing Library, Playwright E2E, axe-core accessibility
 - **Workflow:** Stack selection → Scope & coverage → Spec generation → Smoke tests → CI/CD integration
 - **References:** golang-standards.md, react-standards.md, security-rules.md
 - **Output Location:** `/sessions/[session-id]/mnt/outputs/[project-name]-test-strategy.md`
 
-#### Stage 8: deployment-specs
+#### Stage 9: deployment-specs
 - **Purpose:** Generate cloud-specific infrastructure and CI/CD pipelines
-- **Inputs:** Technical specs (app type, ports, health endpoints, env vars) + Smoke tests from Stage 7
+- **Inputs:** Technical specs (app type, ports, health endpoints, env vars) + Smoke tests from Stage 8
 - **Outputs:**
   - Terraform HCL (multi-cloud standard)
   - Native IaC (Bicep for Azure, CloudFormation for AWS, app.yaml for DigitalOcean)
@@ -116,23 +127,23 @@
 
 ---
 
-### PHASE C: Launch & Grow (Stages 9–11)
+### PHASE C: Launch & Grow (Stages 10–12)
 
-#### Stage 9: product-analytics
+#### Stage 10: product-analytics
 - **Purpose:** Define HOW product success is measured (product health, not system health — see observability-specs)
 - **Inputs:** PRD success criteria, functional specs flows, discovery brief
 - **Outputs:** Measurement plan — North Star Metric + metric tree, AARRR metrics with formulas/owners, HEART per feature, identity model, event catalog (tracking plan), typed React `useTrack()` wrapper, Golang `EventPublisher` port + adapter, dashboards, privacy/PII governance
-- **Timing:** Best run right after Stage 5 so events become requirements in Stage 6 and are tested in Stage 7
+- **Timing:** Best run right after Stage 5 so events become requirements in Stage 7 and are tested in Stage 8
 - **References:** security-rules.md, react-standards.md, golang-standards.md, clean-architecture.md
 - **Output Location:** `[project-name]-measurement-plan.md`
 
-#### Stage 10: go-to-market
+#### Stage 11: go-to-market
 - **Purpose:** Bring the product to market
 - **Inputs:** Discovery brief, PRD, measurement plan, deployment spec
 - **Outputs:** GTM plan — ICP + buying roles, positioning (April Dunford), messaging per persona, pricing & packaging (value metric, tiers, local taxes/payments), sales motion (PLG / sales-led / partner-led), channel priorities, launch tier, alpha → beta → GA phases with go/no-go criteria, T-8w → T+30d timeline, sales/support/legal/billing readiness, launch KPIs, risks
 - **Output Location:** `[project-name]-gtm-plan.md`
 
-#### Stage 11: growth-strategy
+#### Stage 12: growth-strategy
 - **Purpose:** Build a repeatable growth system after launch, and close the lifecycle loop
 - **Inputs:** Measurement plan, GTM plan, live product data
 - **Outputs:** Growth plan — PMF check, growth model equation with sensitivity analysis, funnel diagnosis, growth loops, levers per stage (activation, retention, churn, expansion, referral), ICE/RICE experiment backlog, A/B test design with sample size, operating rhythm, feedback loop into discovery/PRD/specs, 90-day targets
@@ -144,7 +155,7 @@
 
 #### database-schema
 - **Purpose:** Generate production-ready SQL schemas, migrations, indexes
-- **When to Use:** After Stage 6, before implementation if backend/database involved
+- **When to Use:** After Stage 7, before implementation if backend/database involved
 - **Inputs:** Technical specs (data models, entities)
 - **Outputs:**
   - Entity Relationship Diagram (ASCII)
@@ -167,7 +178,7 @@
 
 #### implementation-scaffolding
 - **Purpose:** Generate complete project boilerplate ready for coding
-- **When to Use:** Standalone or after Stages 6-8
+- **When to Use:** Standalone or after Stages 7-9
 - **Inputs:** Stack (Golang/React/Full-Stack), project name, features to scaffold
 - **React Output (with structure choice):**
   - **Option A: Atomic Design** (atoms/molecules/organisms/pages) — recommended for large projects
@@ -203,7 +214,7 @@
 
 #### observability-specs
 - **Purpose:** Generate production monitoring strategy (logging, metrics, alerts, dashboards, SLO/SLI)
-- **When to Use:** After Stage 8 (deployment specs complete)
+- **When to Use:** After Stage 9 (deployment specs complete)
 - **Inputs:** Stack type (Golang/React/Full-Stack), cloud platform, compliance requirements
 - **Golang Output:**
   - Structured logging (zerolog with JSON format, zero PII)
@@ -274,12 +285,12 @@
 
 ## Master Orchestrator Skill: sdlc-orchestrator
 
-**Purpose:** Guides users through all 12 stages (3 phases) sequentially, maintains progress state, offers optional skills
+**Purpose:** Guides users through all 13 stages (3 phases) sequentially, maintains progress state, offers optional skills
 
 **Workflow:**
 1. Initialization (project name, description, stakeholders, scope)
-2. Present 12-stage pipeline visualization grouped by phase
-3. Sequential execution (Stage 0 → 1 → ... → 11), with decision gates after Stage 0 (Go/Pivot/Kill), Stage 4 (critical gaps) and Stage 10 (launch go/no-go)
+2. Present 13-stage pipeline visualization grouped by phase
+3. Sequential execution (Stage 0 → 1 → ... → 12), with decision gates after Stage 0 (Go/Pivot/Kill), Stage 4 (critical gaps) and Stage 11 (launch go/no-go)
 4. After each stage: mark complete, show next stage, ask to continue
 5. At completion: offer optional skills (database-schema, implementation-scaffolding, observability-specs, harness-setup)
 6. Export full project documentation bundle
@@ -307,13 +318,15 @@
          ↓
 [5] functional-specs → Feature Specs
          ↓
-[6] technical-specs → API Contracts, Component Trees, Data Models
+[6] ux-ui-design → Flows, Design System, Mockups, Component Map   (skip for backend-only)
+         ↓
+[7] technical-specs → API Contracts, Component Trees, Data Models
          ↓
     ├─→ database-schema → SQL Schemas + Migrations
     ├─→ implementation-scaffolding → Project Boilerplate
-    ├─→ test-strategy → Testing Strategy + Smoke Tests
+    ├─→ [8] test-strategy → Testing Strategy + Smoke Tests
     │       ↓
-    │   [7] deployment-specs → Cloud Infrastructure + CI/CD
+    │   [9] deployment-specs → Cloud Infrastructure + CI/CD
     │       ↓
     │   observability-specs → Monitoring Strategy
     │       ↓
@@ -321,20 +334,20 @@
     │
     └─→ [Ready for Implementation]
          ↓
-[9]  product-analytics → North Star + Tracking Plan   (ideally in parallel with [5]–[6])
+[10] product-analytics → North Star + Tracking Plan   (ideally in parallel with [5]–[7])
          ↓
-[10] go-to-market → Positioning, Pricing, Launch Plan
+[11] go-to-market → Positioning, Pricing, Launch Plan
          ↓
-[11] growth-strategy → Growth Model, Loops, Experiments
+[12] growth-strategy → Growth Model, Loops, Experiments
          ↺ learnings → [0] product-discovery / [1] product-design (next iteration)
 ```
 
 **Recommended Sequences:**
 
-**Full Lifecycle (12 stages):**
+**Full Lifecycle (13 stages):**
 1. product-discovery → product-design
 2. arc42-doc → atam-facilitator → arch-review
-3. functional-specs → technical-specs → test-strategy → deployment-specs
+3. functional-specs → ux-ui-design → technical-specs → test-strategy → deployment-specs
 4. product-analytics → go-to-market → growth-strategy
 
 **For an Existing Product Going to Market:**
@@ -463,7 +476,7 @@ All skills save outputs to `/sessions/[session-id]/mnt/outputs/` with predictabl
 
 ## Quick Start Examples
 
-### Example 1: Full Lifecycle (12 stages)
+### Example 1: Full Lifecycle (13 stages)
 ```
 User: "Help me design a new project: expense tracking SPA"
 
@@ -572,7 +585,7 @@ A: You can override. The toolkit provides best practices, but teams have their o
 
 ## Version & Status
 
-- **Current (v1.1.0):** 12-stage lifecycle (9 own skills + 3 reused) + 5 complementary skills + orchestrator — adds Discover and Launch & Grow phases
+- **Current (v1.2.0):** 13-stage lifecycle (10 own skills + 3 reused) + 5 complementary skills + orchestrator — Discover, Build (now with UX/UI Design) and Launch & Grow phases
 - **Tested:** All code examples verified to compile/run
 - **Maintained:** Regular updates to match evolving best practices
 - **Integration:** Works with Claude Code (Claude Opus, Sonnet, Haiku models)
@@ -595,7 +608,7 @@ A: You can override. The toolkit provides best practices, but teams have their o
    - Check cloud-standards.md for deployment patterns
 
 3. **Generate Incrementally**
-   - Don't try to do all 12 stages at once
+   - Don't try to do all 13 stages at once
    - Complete one stage, then move to next
    - Iterate within each stage if needed
 

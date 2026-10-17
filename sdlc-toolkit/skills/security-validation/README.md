@@ -6,7 +6,7 @@ The **security-validation** skill is now fully integrated into the SDLC Toolkit 
 
 ## Integration Points
 
-### 1. Technical Specifications (Stage 6)
+### 1. Technical Specifications (Stage 7)
 **Location:** technical-specs/SKILL.md → Step 5.5 Security Checkpoint
 
 **When:** After technical spec generation, before proceeding to next stages
@@ -32,13 +32,13 @@ The **security-validation** skill is now fully integrated into the SDLC Toolkit 
 
 **Recommended Sequence:**
 ```
-Stage 6: Technical Specs
+Stage 7: Technical Specs
         ↓
         → SECURITY VALIDATION (NEW)
         ↓
-Stage 7: Test Strategy (includes security tests)
+Stage 8: Test Strategy (includes security tests)
         ↓
-Stage 8: Deployment Specs
+Stage 9: Deployment Specs
 ```
 
 **Full recommended flow:**
@@ -48,13 +48,13 @@ Stage 8: Deployment Specs
 [3] Evaluation (ATAM)
 [4] Architecture Review
 [5] Functional Specs
-[6] Technical Specs
+[7] Technical Specs
     └─ Step 5.5: Security Checkpoint
     └─ Option A: Invoke security-validation → DEEP OWASP REVIEW
-[7] Test Strategy
+[8] Test Strategy
     └─ Includes security test cases
     └─ OWASP vulnerability patterns
-[8] Deployment Specs
+[9] Deployment Specs
     └─ Infrastructure security configuration
 ```
 

@@ -1,7 +1,7 @@
 {
   "name": "sdlc-toolkit",
-  "version": "1.1.0",
-  "description": "Comprehensive Product Development Lifecycle plugin — from discovery to growth. Covers product discovery, PRD, architecture, functional and technical specifications, testing, deployment, product analytics, go-to-market and growth strategy, with code generation for React and Golang microservices.",
+  "version": "1.2.0",
+  "description": "Comprehensive Product Development Lifecycle plugin — from discovery to growth. Covers product discovery, PRD, architecture, functional specifications, UX/UI design, technical specifications, testing, deployment, product analytics, go-to-market and growth strategy, with code generation for React and Golang microservices.",
   "author": {
     "name": "Felipe Pabón"
   }

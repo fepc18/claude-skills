@@ -32,7 +32,7 @@ triggers:
 
 ## Purpose
 
-Generar especificaciones completas de deployment en cloud que cierren la brecha entre especificaciones técnicas (Stage 6) e implementación real. Este skill produce:
+Generar especificaciones completas de deployment en cloud que cierren la brecha entre especificaciones técnicas (Stage 7) e implementación real. Este skill produce:
 
 - **Terraform HCL** — IaC multi-cloud (funciona en Azure, AWS, DigitalOcean)
 - **IaC Nativa por cloud** — Bicep (Azure), CloudFormation (AWS); Terraform para DO
@@ -348,8 +348,8 @@ Deployment Specs → Observability Specs → Infrastructure provisioned with int
 ## Dependencies & Context
 
 **Used by:**
-- sdlc-orchestrator (Stage 7 - Nueva etapa)
-- technical-specs skill (Stage 6 puede invocar deployment-specs automáticamente)
+- sdlc-orchestrator (Stage 9)
+- technical-specs skill (Stage 7 puede invocar deployment-specs automáticamente)
 - Puede usarse de forma independiente si tienes specs técnicas ya hechas
 
 **Feeds into:**

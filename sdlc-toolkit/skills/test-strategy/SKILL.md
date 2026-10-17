@@ -93,7 +93,7 @@ Before returning:
 
 After the test strategy is approved by the user, ask:
 
-**"Would you like to also generate Deployment Specifications (Stage 8)? The smoke test suite from this strategy will be integrated into the CI/CD deployment pipeline for Azure, AWS, or DigitalOcean."**
+**"Would you like to also generate Deployment Specifications (Stage 9)? The smoke test suite from this strategy will be integrated into the CI/CD deployment pipeline for Azure, AWS, or DigitalOcean."**
 
 Options:
 - Yes → Invoke `deployment-specs` skill with context:
@@ -344,10 +344,10 @@ If the user asks for adjustments:
 
 ## Dependencies & Context
 
-**Used by:** sdlc-orchestrator (Stage 7), can be used independently
+**Used by:** sdlc-orchestrator (Stage 8), can be used independently
 **Feeds into:**
 - Implementation (QA and developers use these specs to create tests)
-- `deployment-specs` skill (Stage 8): this test strategy provides smoke test suite that gets integrated into CI/CD pipelines
+- `deployment-specs` skill (Stage 9): this test strategy provides smoke test suite that gets integrated into CI/CD pipelines
 **References:**
 - `../../references/golang-standards.md` (testing patterns, mocking, table-driven tests)
 - `../../references/react-standards.md` (Vitest, RTL, E2E patterns, axe-core)

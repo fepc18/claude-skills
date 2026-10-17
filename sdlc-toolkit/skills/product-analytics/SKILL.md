@@ -44,7 +44,7 @@ Write the output in the user's language.
 
 ## When to run it
 
-In the orchestrator it's Stage 9, but **the earlier the better**: ideally run it right after `functional-specs` (Stage 5) so events are built into the technical specs and tested in Stage 7. Retrofitting tracking after launch means losing the launch-week data you most need. If the user is already past Stage 6, recommend adding the events as tickets to the current build.
+In the orchestrator it's Stage 10, but **the earlier the better**: ideally run it right after `functional-specs` (Stage 5) so events are built into the technical specs and tested in Stage 8. Retrofitting tracking after launch means losing the launch-week data you most need. If the user is already past Stage 7, recommend adding the events as tickets to the current build.
 
 ## Workflow
 
@@ -110,7 +110,7 @@ Filename: `[project-name]-measurement-plan.md`, saved to the outputs directory (
 
 ## Dependencies & Context
 
-**Used by:** sdlc-orchestrator (Stage 9 — recommended to run alongside Stage 5–6)
+**Used by:** sdlc-orchestrator (Stage 10 — recommended to run alongside Stage 5–7)
 **Inputs:** PRD success criteria, functional specs flows, discovery brief
 **Feeds into:** `technical-specs` (events as requirements), `test-strategy` (event assertions), `go-to-market` (launch KPIs), `growth-strategy` (levers and experiment metrics)
 **Complements:** `observability-specs` (system health) — keep them separate but link dashboards

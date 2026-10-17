@@ -139,7 +139,7 @@ If the user wants a deck for leadership or sales, offer to turn the plan into sl
 
 ## Dependencies & Context
 
-**Used by:** sdlc-orchestrator (Stage 10)
+**Used by:** sdlc-orchestrator (Stage 11)
 **Inputs:** discovery brief, PRD, measurement plan, deployment spec (release mechanics)
 **Feeds into:** `growth-strategy` (post-launch scaling), back into `product-design` (beta feedback)
 **Output:** `[project-name]-gtm-plan.md`
