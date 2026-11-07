@@ -74,6 +74,8 @@
   - *Existing product* — respects the current stack and visual language (e.g., Bootstrap 5 + react-bootstrap + SCSS); extracts its design system, logs inconsistencies as design debt, Impeccable only for diagnostics
   - *New product* — React + TypeScript + Tailwind + shadcn/ui (Radix) + lucide + TanStack Table + React Hook Form/Zod; tokens as CSS variables (light/dark); Impeccable for polish
 - **Where designs live:** Claude **Design System** and **Design** artifacts when available; otherwise token files + HTML mockups in the real stack
+- **Way of working:** style round on 3–4 screens → coverage decision (4 reusable templates + custom screens for risky actions) → build on one shared app shell; responsive verified at 1440/1024/768/390 px
+- **Assets:** spec template, brownfield audit checklist, greenfield stack, `app-shell-and-templates.md`, `scripts/check-contrast.py`, `scripts/check-overflow.js`
 - **Skip when:** backend-only work
 - **Output Location:** `[project-name]-ux-ui-design.md`
 
@@ -585,7 +587,7 @@ A: You can override. The toolkit provides best practices, but teams have their o
 
 ## Version & Status
 
-- **Current (v1.2.0):** 13-stage lifecycle (10 own skills + 3 reused) + 5 complementary skills + orchestrator — Discover, Build (now with UX/UI Design) and Launch & Grow phases
+- **Current (v1.3.0):** 13-stage lifecycle (10 own skills + 3 reused) + 5 complementary skills + orchestrator — Discover, Build (now with UX/UI Design) and Launch & Grow phases
 - **Tested:** All code examples verified to compile/run
 - **Maintained:** Regular updates to match evolving best practices
 - **Integration:** Works with Claude Code (Claude Opus, Sonnet, Haiku models)
