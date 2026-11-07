@@ -57,7 +57,7 @@ The single most important decision is whether we are designing **inside an exist
 
 If the evidence is ambiguous, ask one question: "¿Este diseño es para un producto que ya existe (respetamos su estilo actual) o para uno nuevo?" The user can always override the default — e.g., a deliberate redesign of an existing product is Mode B, but then say clearly that it's a migration project with its own cost.
 
-Read `assets/brownfield-audit-checklist.md` for Mode A or `assets/greenfield-stack.md` for Mode B now.
+Read `assets/brownfield-audit-checklist.md` for Mode A or `assets/greenfield-stack.md` for Mode B now. For back-office or data-dense products, also read `assets/app-shell-and-templates.md` (shell, navigation, templates, responsive and print rules).
 
 ## Step 2 — Gather context
 
@@ -77,6 +77,8 @@ Before drawing any screen, settle the structure — it's cheap to change here an
 3. **Navigation model**: global nav, contextual nav, breadcrumbs, how the user always knows where they are and how to get back.
 4. **Content priorities per screen**: what must be visible without scrolling, what is secondary, what goes behind a click.
 
+**Long menus.** When the product has many options (typical of legacy migrations), don't put them all in one sidebar: use module tabs in the top bar, a short sidebar per module and *hubs* (card grids) for options with many variants. See `assets/app-shell-and-templates.md` §3.
+
 For data-dense, professional tools (clinical records, billing, back-office), favor: keyboard-friendly forms, long forms split into sections with progress and autosave, tables with sticky headers, filters and saved views, clear distinction between read and edit modes, and confirmation only for destructive or irreversible actions (signing a record, issuing an invoice).
 
 ## Step 4 — Design system
@@ -89,17 +91,24 @@ For data-dense, professional tools (clinical records, billing, back-office), fav
 
 ## Step 5 — Wireframes and mockups
 
-Go low-fidelity first (layout, hierarchy, content), get agreement, then high-fidelity with the design system applied. For each key screen include **all states**: default, empty (first use), loading, error, partial data, no permission, success/confirmation — plus responsive behavior at the breakpoints that matter for the context of use.
+Go low-fidelity first (layout, hierarchy, content), get agreement, then high-fidelity with the design system applied.
+
+**Work in rounds and let the user decide the coverage:**
+1. **Style round:** 3–4 representative screens (main daily task, a list, a form, login) to validate color, type, density and the app shell. Iterate here until the user is happy; it's the cheapest place to change the look.
+2. **Coverage decision:** before drawing everything, propose **reusable templates** (list with filters, form, report with totals, step wizard / file import) plus **custom screens only where the risk is** (the main transaction, its confirmation and printout, irreversible or regulated actions). Show how many options each template covers. Ask the user to choose; don't silently draw 60 screens or stop at 4.
+3. **Build round:** the templates and custom screens on one shared shell, so the frame never changes between artboards (fixed sidebar width, same icon set, same top bar). For each key screen include **all states**: default, empty (first use), loading, error, partial data, no permission, success/confirmation — plus responsive behavior at the breakpoints that matter for the context of use.
 
 **Where they live.**
 - If Claude's **Design** artifact type is available: lay out the screens as artboards on a canvas, built from the published design system, one artboard per screen/state. Link the artifact from the spec.
 - Otherwise: static HTML mockups using the **real stack** of the mode (Bootstrap CSS for Mode A with the product's tokens; Tailwind + shadcn-style markup for Mode B), saved next to the spec. Mockups in the real stack translate to code with little loss.
 
+**Verify responsive behavior before showing it.** Render each mockup at 1440, 1024, 768 and 390 px with `assets/scripts/check-overflow.js`; the page's `scrollWidth` must equal the viewport (tables scroll in their own wrapper). Look at the screenshots, not only the numbers: a side column can hide the last columns of a wide table without causing overflow. Check drawers and dialogs by hand and say which states weren't verified.
+
 Annotate each screen with: purpose, components used (from the inventory), data shown and its source, actions and their results, analytics events fired, and accessibility notes.
 
 ## Step 6 — Accessibility and usability
 
-**Accessibility (WCAG 2.2 AA) as requirements, not a later audit:** color contrast ≥ 4.5:1 for text (3:1 for large text and UI components), full keyboard operation with visible focus, labels and error messages tied to inputs, target size ≥ 24×24 px, no information conveyed by color alone, logical heading structure, status messages announced to screen readers. In Mode A, check that new screens meet this even if older ones don't, and log the older gaps as debt.
+**Accessibility (WCAG 2.2 AA) as requirements, not a later audit.** Verify token contrast in light and dark with `assets/scripts/check-contrast.py` before publishing the design system. Requirements: color contrast ≥ 4.5:1 for text (3:1 for large text and UI components), full keyboard operation with visible focus, labels and error messages tied to inputs, target size ≥ 24×24 px, no information conveyed by color alone, logical heading structure, status messages announced to screen readers. In Mode A, check that new screens meet this even if older ones don't, and log the older gaps as debt.
 
 **Usability test plan (lightweight):** 5 representative users, 3–5 realistic tasks taken from the user flows, success criteria per task (completion, time, errors), and what would trigger a redesign. Testing the mockups before coding is the cheapest moment to find problems.
 
@@ -116,6 +125,8 @@ Command names may change between Impeccable versions — check its docs rather t
 
 Use the template at `assets/ux-ui-design-spec-template.md`. Filename: `[project-name]-ux-ui-design.md`, saved to the outputs directory (Cowork: `/sessions/[session-id]/mnt/outputs/`; Claude Code: the project's `docs/` folder unless told otherwise), plus links to the Design System and Design artifacts or the paths of the HTML mockups and token files.
 
+End the spec with an **Open decisions** list: every business assumption the mockups make (draw the most likely option and say so), missing brand assets, and hardware questions (printer, barcode scanner, shared PCs). These are for the product owner, not for you to settle.
+
 After saving, show the mode, the screen inventory and the component map summary, and ask: "¿Ajustamos algo o seguimos a Technical Specs?"
 
 ## Quality Checklist
@@ -126,6 +137,11 @@ After saving, show the mode, the screen inventory and the component map summary,
 - ✅ Every key flow has a diagram with error paths
 - ✅ Every screen in the inventory has role/permission, purpose and entry point
 - ✅ Every key screen shows empty, loading, error and no-permission states
+- ✅ Style validated on a few screens before the rest; coverage (templates vs. custom screens) agreed with the user, with a table mapping every menu option to a template or screen
+- ✅ One shared app shell: fixed sidebar width, same icon set and top bar on every artboard
+- ✅ No horizontal page scroll at 1440 / 1024 / 768 / 390 px (checked, not assumed); mobile menu is a drawer, not a long strip
+- ✅ Disabled actions explain why; irreversible actions confirm with their consequences
+- ✅ Open decisions listed (business assumptions, brand assets, hardware)
 - ✅ Component map lists, for each UI element, the existing/shadcn component or a new component with props and states
 - ✅ Accessibility requirements are concrete (contrast, keyboard, labels, target size)
 - ✅ Usability test plan has tasks and success criteria

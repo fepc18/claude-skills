@@ -376,6 +376,11 @@ For issues or feedback:
 
 ## Version History
 
+### v1.3.0 (2026-11-07)
+- `ux-ui-design`: new asset `app-shell-and-templates.md` with rules learned on a real back-office project (Vida Nueva billing): validate style on a few screens first, agree screen coverage as 4 reusable templates plus custom screens for risky actions, one shared app shell (fixed sidebar, module tabs + hubs for long menus, one icon set), mobile drawer, responsive rules, transaction patterns and printed receipts
+- `ux-ui-design`: new scripts `check-contrast.py` (WCAG contrast of token pairs per theme, warns when state colors only differ by hue) and `check-overflow.js` (Playwright: no horizontal page scroll at 1440/1024/768/390 px, with screenshots)
+- Spec template: screen-coverage table, mobile navigation, responsive rules section and an "Open decisions" list for the product owner
+
 ### v1.2.0 (2026-10-17)
 - New skill `ux-ui-design` (Stage 6): flows, information architecture, design system, mockups with all states, WCAG 2.2 AA, usability test plan, component map
 - Two modes: existing product (respect current stack and visual language) and new product (React + Tailwind + shadcn/ui); uses Claude Design System / Design artifacts when available; Impeccable for diagnostics or polish

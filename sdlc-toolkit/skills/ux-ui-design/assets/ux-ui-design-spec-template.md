@@ -31,8 +31,19 @@ flowchart TD
 |---|---|---|---|---|
 | S01 | | | | |
 
+### Screen coverage (templates + custom screens)
+| Template | Options it covers | Artboard |
+|---|---|---|
+| List with filters | [masters, catalogs…] | |
+| Form | [edit of each master, settings…] | |
+| Report with totals | [queries, reports…] | |
+| Step wizard / import | [initial loads, bulk uploads…] | |
+
+Custom screens: [main transaction, confirmation/printout, irreversible or regulated actions]. Every menu option maps to a template or a custom screen.
+
 ### Navigation model
-- Global: [sidebar / top bar] · Contextual: [tabs / breadcrumbs] · Back paths: [...]
+- Global: [module tabs in the top bar / sidebar of fixed width] · Hubs: [options with many variants as card grids] · Contextual: [breadcrumbs / wizard steps] · Back paths: [...]
+- Mobile (< 1024 px): [☰ drawer with modules and options; top bar in rows]
 
 ## 4. Design System
 
@@ -76,13 +87,21 @@ flowchart TD
 |---|---|---|---|---|
 
 ## 7. Accessibility Requirements (WCAG 2.2 AA)
-- [ ] Text contrast ≥ 4.5:1; large text and UI components ≥ 3:1
+- [ ] Text contrast ≥ 4.5:1; large text and UI components ≥ 3:1 (checked with `check-contrast.py` in light and dark)
 - [ ] Full keyboard operation; visible focus; logical tab order
 - [ ] Every input has a label; errors linked to inputs and announced
 - [ ] Target size ≥ 24×24 px
 - [ ] No information by color alone
 - [ ] Headings structure each page; landmarks present
 - [ ] Status messages (save, error) announced to screen readers
+- [ ] Disabled buttons explain why (visible text + `aria-describedby`)
+
+## 7b. Responsive Rules
+- **Breakpoints:** [≥ 1024 px fixed sidebar · < 1024 px drawer]
+- **Grids and columns:** [auto-fit minmax(200px, 1fr); main/side columns stack]
+- **Tables:** [min width inside an `overflow-x: auto` wrapper; the page never scrolls sideways]
+- **Verified at:** 1440 / 1024 / 768 / 390 px with `check-overflow.js` · States not verified: [...]
+- **Print:** [receipt 80 mm / letter PDF, if the product prints]
 
 ## 8. Usability Test Plan
 - **Participants:** 5 × [persona]
@@ -93,4 +112,8 @@ flowchart TD
 ## 9. Implementation Guidance
 - **Stack setup:** [Mode A: existing libraries and tokens to import / Mode B: greenfield setup checklist]
 - **Impeccable:** [Mode A: diagnostic only — critique/audit / Mode B: full use]
-- **Open decisions:** [...]
+
+### Open decisions (for the product owner)
+1. [Business assumption the mockups make: what was drawn and the alternative]
+2. [Missing brand assets: logo, colors]
+3. [Hardware and context: printer, barcode scanner, shared PCs, screen sizes]
